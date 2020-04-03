@@ -1,0 +1,10 @@
+name: Islands
+main: me.flaymed.islands.Main
+version: 0.1
+author: Flaymed
+
+softdepend: [ProtocolLib, PodcrashAPI]
+commands:
+  leave:
+    description: Leave a game.
+    usage: /leave

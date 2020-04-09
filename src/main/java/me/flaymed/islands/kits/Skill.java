@@ -1,4 +1,4 @@
-package me.flaymed.islands.kits.skills;
+package me.flaymed.islands.kits;
 
 import org.bukkit.inventory.ItemStack;
 

@@ -2,7 +2,7 @@ package me.flaymed.islands.kits.classes;
 
 import com.podcrash.api.mc.sound.SoundWrapper;
 import me.flaymed.islands.kits.IslandsPlayer;
-import me.flaymed.islands.kits.skills.Skill;
+import me.flaymed.islands.kits.Skill;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -1,0 +1,94 @@
+package me.flaymed.islands.game.map.bridge;
+
+import com.podcrash.api.db.pojos.map.IslandsMap;
+import me.raindance.chunk.WorldScanner;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+public class BridgeManager {
+
+    private int duration = 1600;
+
+    public void initiateBridgesMap(World world) {
+        WorldScanner.scanWorldSync("islands", world);
+    }
+
+    public void generateBridgeSections(World world) {
+        IslandsMap map = (IslandsMap) WorldScanner.get(world.getName());
+
+        HashMap<Location, Location> bridgeParts = map.getBridgeParts();
+
+        for (Map.Entry bridgePart : bridgeParts.entrySet()) {
+
+            LinkedList<Block> bridgeBlocks = new LinkedList<>();
+
+            Location piece1 = (Location) bridgePart.getKey();
+            Location piece2 = (Location) bridgePart.getValue();
+
+            double xDifference = piece1.getBlockX() - piece2.getBlockX();
+            double yDifference = piece1.getBlockY() - piece2.getBlockY();
+            double zDifference = piece1.getBlockZ() - piece2.getBlockZ();
+            //If piece1 X is smaller than piece2 X then the calculated difference will be less than 0, multiply it by negative one to make it positive
+            //Same for Y & Z values
+            xDifference = makePositive(xDifference);
+            yDifference = makePositive(yDifference);
+            zDifference = makePositive(zDifference);
+
+            double bridgeWidth;
+            double bridgeLength;
+
+            if (xDifference > zDifference) {
+                bridgeWidth = zDifference;
+                bridgeLength = xDifference;
+            } else {
+                bridgeWidth = xDifference;
+                bridgeLength = zDifference;
+            }
+
+            int highestX = Math.max(piece1.getBlockX(), piece2.getBlockX());
+            int lowestX = Math.min(piece1.getBlockX(), piece2.getBlockX());
+
+            int highestY = Math.max(piece1.getBlockY(), piece2.getBlockY());
+            int lowestY = Math.min(piece1.getBlockY(), piece2.getBlockY());
+
+            int highestZ = Math.max(piece1.getBlockZ(), piece2.getBlockZ());
+            int lowestZ = Math.min(piece1.getBlockZ(), piece2.getBlockZ());
+
+            for (int x = lowestX; x < highestX; x++) {
+                for (int y = lowestY; y < highestY; y++) {
+                    for (int z = lowestZ; z < highestZ; z++) {
+                        Block block = world.getBlockAt(x, y, z);
+                        bridgeBlocks.add(block);
+                    }
+                }
+            }
+
+            for (int i = 0; i < bridgeBlocks.size(); i++) {
+
+            }
+
+
+
+
+        }
+    }
+
+    /**
+     * Provide a number, if the number is less than 0, the number will be set equal to itself times -1 to make it positive.
+     * @param number Number to make positive
+     * @return Returns positive form of the number or the number if it is already positive
+     */
+    public double makePositive(double number) {
+        if(number < 0)
+            number *= -1;
+
+        return number;
+    }
+
+}

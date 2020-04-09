@@ -1,8 +1,10 @@
 package me.flaymed.islands.game;
 
 import com.podcrash.api.db.pojos.map.GameMap;
+import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.mc.game.Game;
 import com.podcrash.api.mc.game.GameType;
+import com.podcrash.api.mc.game.TeamEnum;
 import com.podcrash.api.mc.game.TeamSettings;
 import com.podcrash.api.mc.game.objects.ItemObjective;
 import com.podcrash.api.mc.game.objects.WinObjective;
@@ -25,18 +27,23 @@ public class IsGame extends Game {
     }
 
     @Override
+    public int getMaxPlayers() {
+        return 40;
+    }
+
+    @Override
     public GameScoreboard getGameScoreboard() {
         return null;
     }
 
     @Override
     public int getAbsoluteMinPlayers() {
-        return 0;
+        return 1;
     }
 
     @Override
     public Location spectatorSpawn() {
-        return null;
+        return getGameWorld().getSpawnLocation();
     }
 
     @Override
@@ -46,23 +53,29 @@ public class IsGame extends Game {
 
     @Override
     public Class<? extends GameMap> getMapClass() {
-        return null;
+        return IslandsMap.class;
     }
 
     @Override
     public TeamSettings getTeamSettings() {
-        return null;
+        TeamSettings.Builder builder = new TeamSettings.Builder();
+        return builder.setCapacity(5)
+                .setMax(10)
+                .setMin(1)
+                .setTeamColors(TeamEnum.RED, TeamEnum.BLUE, TeamEnum.GREEN, TeamEnum.valueOf("Yellow"))
+                .build();
     }
 
     @Override
     public String getMode() {
-        return null;
+        return "Islands";
     }
 
     @Override
     public String getPresentableResult() {
         return null;
     }
+
 
     @Override
     public List<WinObjective> getWinObjectives() {

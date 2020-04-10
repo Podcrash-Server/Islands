@@ -1,95 +1,58 @@
 package me.flaymed.islands.game.map.bridge;
 
 import com.podcrash.api.db.pojos.map.IslandsMap;
+import com.podcrash.api.mc.time.TimeHandler;
+import com.podcrash.api.mc.time.resources.TimeResource;
 import me.raindance.chunk.WorldScanner;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class BridgeManager {
 
-    private int duration = 1600;
+    private BridgeManager() {
 
-    public void initiateBridgesMap(World world) {
-        WorldScanner.scanWorldSync("islands", world);
     }
 
-    public void generateBridgeSections(World world) {
+    public static void dropBridges(World world) {
         IslandsMap map = (IslandsMap) WorldScanner.get(world.getName());
 
-        HashMap<Location, Location> bridgeParts = map.getBridgeParts();
+        HashMap<Integer, LinkedList<Object>> bridgePieces = map.getBridgePieces();
 
-        for (Map.Entry bridgePart : bridgeParts.entrySet()) {
 
-            Location piece1 = (Location) bridgePart.getKey();
-            Location piece2 = (Location) bridgePart.getValue();
 
-            //Y Difference not needed
-            double xDifference = Math.abs(piece1.getBlockX() - piece2.getBlockX());
-            double zDifference = Math.abs(piece1.getBlockZ() - piece2.getBlockZ());
+        final int[] i = {0};
+        TimeHandler.repeatedTimeSeconds(1, 0, new TimeResource() {
 
-            //Only need width for direction
-            double bridgeLength;
+            @Override
+            public void task() {
+                for (Map.Entry bridgePiece : bridgePieces.entrySet()) {
+                    if ((Integer) bridgePiece.getKey() != i[0])
+                        continue;
 
-            if (xDifference > zDifference)
-                bridgeLength = xDifference;
-            else
-                bridgeLength = zDifference;
+                    LinkedList<Object> list = (LinkedList<Object>) bridgePiece.getValue();
+                    Location loc = (Location) list.getFirst();
+                    Block block = (Block) list.getLast();
 
-            int highestX = Math.max(piece1.getBlockX(), piece2.getBlockX());
-            int lowestX = Math.min(piece1.getBlockX(), piece2.getBlockX());
-
-            int highestY = Math.max(piece1.getBlockY(), piece2.getBlockY());
-            int lowestY = Math.min(piece1.getBlockY(), piece2.getBlockY());
-
-            int highestZ = Math.max(piece1.getBlockZ(), piece2.getBlockZ());
-            int lowestZ = Math.min(piece1.getBlockZ(), piece2.getBlockZ());
-
-            LinkedList<Object> section = new LinkedList<>();
-            for (int i = 0; i < bridgeLength; i++) {
-
-                //Z is the width of the bridge
-                if (xDifference > zDifference) {
-
-                    int startingPos = highestX - 1;
-                    for (int x = startingPos; x > startingPos - bridgeLength; x--) {
-                        for (int y = lowestY; y < highestY; y++) {
-                            for (int z = lowestZ; z < highestZ; z++) {
-                                if (world.getBlockAt(x, y, z).getType().equals(Material.AIR))
-                                    continue;
-                                section.add(new Location(world, x, y, z));
-                                section.add(world.getBlockAt(x, y, z));
-                                map.addBridgePiece(i, section);
-                            }
-                        }
-                        section.clear();
-                    }
-
-                //X is the width of the bridge
-                } else {
-                    int startingPos = highestZ - 1;
-                    for (int z = startingPos; z > lowestZ; z--) {
-                        for (int y = lowestY; y < highestY; y++) {
-                            for (int x = lowestX; x < highestX; x++) {
-                                if (world.getBlockAt(x, y, z).getType().equals(Material.AIR))
-                                    continue;
-                                section.add(new Location(world, x, y, z));
-                                section.add(world.getBlockAt(x, y, z));
-                                map.addBridgePiece(i, section);
-                            }
-                        }
-                        section.clear();
-                    }
+                    world.getBlockAt(loc).setType(block.getType());
+                    bridgePieces.remove((Integer) bridgePiece.getKey());
                 }
+                i[0]++;
             }
 
-        }
+            @Override
+            public boolean cancel() {
+                return i[0] == map.getBridgeLength();
+            }
+
+            @Override
+            public void cleanup() {
+
+            }
+        });
+
     }
 
 }

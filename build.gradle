@@ -61,6 +61,6 @@ test {
     testLogging.showStandardStreams true
 }
 
-task spigot(dependsOn: jar) {
+task bungee(dependsOn: jar) {
 
 }

@@ -16,7 +16,6 @@ public class Fisherman extends IslandsPlayer {
     public Fisherman(Player player, List<Skill> skills) {
         super(player);
         this.skills = skills;
-        setSound(new SoundWrapper("ambient.weather.rain", 0.95f, 115));
     }
 
     @Override
@@ -25,7 +24,14 @@ public class Fisherman extends IslandsPlayer {
     }
 
     @Override
+    public void applyEffects() {
+
+    }
+
+    @Override
     public int getHP() {
         return 20;
     }
+
+
 }

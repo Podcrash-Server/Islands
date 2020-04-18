@@ -1,29 +1,51 @@
 package me.flaymed.islands.listeners.maintainers;
 
+import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.db.redis.Communicator;
 import com.podcrash.api.mc.economy.Currency;
 import com.podcrash.api.mc.economy.IEconomyHandler;
 import com.podcrash.api.mc.effect.status.Status;
 import com.podcrash.api.mc.effect.status.StatusApplier;
 import com.podcrash.api.mc.events.game.GameEndEvent;
+import com.podcrash.api.mc.events.game.GameMapLoadEvent;
 import com.podcrash.api.mc.events.game.GameStartEvent;
 import com.podcrash.api.mc.game.Game;
 import com.podcrash.api.mc.game.GameManager;
 import com.podcrash.api.mc.listeners.ListenerBase;
 import com.podcrash.api.plugin.Pluginizer;
+import com.sun.tools.javac.file.Locations;
 import me.flaymed.islands.Main;
 import me.flaymed.islands.game.IsGame;
 import me.flaymed.islands.kits.IslandsPlayer;
 import me.flaymed.islands.kits.IslandsPlayerManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
+import java.util.Random;
 
 public class IsGameListener extends ListenerBase {
     public IsGameListener(JavaPlugin plugin) {
         super(plugin);
+    }
+
+    @EventHandler
+    public void mapLoad(GameMapLoadEvent e) {
+        Game game = e.getGame();
+        IslandsMap map = (IslandsMap) e.getMap();
+        placeOres(game.getGameWorld(), map.getRedOres());
+        placeOres(game.getGameWorld(), map.getBlueOres());
+        placeOres(game.getGameWorld(), map.getYellowOres());
+        placeOres(game.getGameWorld(), map.getGreenOres());
+
+        stockChests(game.getGameWorld(), map.getChests());
+
     }
 
     @EventHandler
@@ -71,4 +93,73 @@ public class IsGameListener extends ListenerBase {
         }
 
     }
+
+    private void placeOres(World world, List<Location> locations) {
+
+        for (Location location : locations) {
+            double random = Math.random();
+            //10% chance of stone
+            if (random <= 0.05) {
+                world.getBlockAt(location).setType(Material.STONE);
+                continue;
+            }
+
+            if(random <= 0.20) {
+                world.getBlockAt(location).setType(Material.COAL_ORE);
+                continue;
+            }
+
+            if (random <= 0.60) {
+                world.getBlockAt(location).setType(Material.IRON_ORE);
+                continue;
+            }
+
+            if (random <= 0.80) {
+                world.getBlockAt(location).setType(Material.GOLD_ORE);
+                continue;
+            }
+
+            if (random <= 1) {
+                world.getBlockAt(location).setType(Material.DIAMOND_ORE);
+                continue;
+            }
+
+        }
+
+    }
+
+    private void stockChests(World world, List<Location> chests) {
+
+        ItemStack[] items = {new ItemStack(Material.IRON_SWORD), new ItemStack(Material.DIAMOND_CHESTPLATE), new ItemStack(Material.MUSHROOM_SOUP), new ItemStack(Material.DIAMOND_LEGGINGS),
+        new ItemStack(Material.DIAMOND_HELMET), new ItemStack(Material.DIAMOND_BOOTS), new ItemStack(Material.DIAMOND_SWORD), new ItemStack(Material.DIAMOND_AXE), new ItemStack(Material.BOW),
+        new ItemStack(Material.ARROW), new ItemStack(Material.IRON_HELMET), new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.IRON_LEGGINGS), new ItemStack(Material.IRON_BOOTS),
+        new ItemStack(Material.IRON_AXE)};
+
+        for (Location chestLoc : chests) {
+            Random rand = new Random();
+            Block block = world.getBlockAt(chestLoc);
+            if (block.getType() == Material.CHEST) {
+                Chest chest = (Chest) block;
+                Inventory chestInventory = chest.getInventory();
+                int itemAmount = (int) (Math.random() * ((6 - 3) + 1)) + 3;
+                for (int i = 0; i < itemAmount; i++) {
+                    int slot = rand.nextInt(27);
+                    ItemStack item = items[rand.nextInt(items.length)];
+
+                    if (item.equals(Material.ARROW)) {
+                        //Between 10 to 32 arrows
+                        int arrowAmount = (int) (Math.random() * ((32 - 10) + 1)) + 10;
+                        for (int a = 0; a < arrowAmount; a++) {
+                            chestInventory.setItem(slot, item);
+                        }
+                        continue;
+                    }
+
+                    chestInventory.setItem(slot, item);
+
+                }
+            }
+        }
+    }
+
 }

@@ -1,6 +1,8 @@
 package me.flaymed.islands.kits;
 
+import com.podcrash.api.mc.game.Game;
 import com.podcrash.api.mc.game.GameManager;
+import com.podcrash.api.mc.game.TeamEnum;
 import com.podcrash.api.mc.sound.SoundWrapper;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -12,7 +14,6 @@ public abstract class IslandsPlayer {
 
     private Player player;
     private double fallDamage = 0;
-    private SoundWrapper sound; //sound when player gets hit
 
     public IslandsPlayer (Player player) {
         this.player = player;
@@ -20,9 +21,17 @@ public abstract class IslandsPlayer {
 
     public abstract int getHP();
     public abstract void equip();
+    public abstract void applyEffects();
 
     public boolean isInGame() {
         return GameManager.hasPlayer(this.player);
+    }
+    public Game getGame() {
+        return GameManager.getGame();
+    }
+    public TeamEnum getTeam() {
+        if (isInGame()) return GameManager.getGame().getTeamEnum(getPlayer());
+        else return null;
     }
 
     public Player getPlayer() {
@@ -53,13 +62,6 @@ public abstract class IslandsPlayer {
     }
     public void setFallDamage(double fallDamage) {
         this.fallDamage = fallDamage;
-    }
-
-    public SoundWrapper getSound() {
-        return sound;
-    }
-    public void setSound(SoundWrapper sound) {
-        this.sound = sound;
     }
 
 }

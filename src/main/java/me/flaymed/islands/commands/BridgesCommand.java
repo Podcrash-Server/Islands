@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class BridgesCommand extends CommandBase {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (sender instanceof Player && sender.hasPermission("islands.developer")) {
+        if (sender instanceof Player && sender.hasPermission("islands.host")) {
             BridgeManager.dropBridges(((Player) sender).getWorld());
         } else {
             sender.sendMessage(String.format("%sIslands> %sYou have insufficient permissions to use that command.", ChatColor.BLUE, ChatColor.GRAY));

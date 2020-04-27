@@ -1,9 +1,6 @@
 package me.flaymed.islands.game;
 
-import com.podcrash.api.game.Game;
-import com.podcrash.api.game.GameType;
-import com.podcrash.api.game.TeamEnum;
-import com.podcrash.api.game.TeamSettings;
+import com.podcrash.api.game.*;
 import com.podcrash.api.game.objects.ItemObjective;
 import com.podcrash.api.game.objects.WinObjective;
 import me.flaymed.islands.events.GameStageEvent;

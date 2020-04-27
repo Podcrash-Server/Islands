@@ -1,9 +1,12 @@
 package me.flaymed.islands.listeners;
 
+import com.podcrash.api.game.GameManager;
+import com.podcrash.api.game.GameState;
 import com.podcrash.api.kits.KitPlayer;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
 import me.flaymed.islands.kits.classes.Brawler;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,10 +19,23 @@ public class IslandsJoinListener extends ListenerBase {
 
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
+        Player player = e.getPlayer();
 
-        Brawler brawler = new Brawler(p);
+        Brawler brawler = new Brawler(player);
         KitPlayerManager.getInstance().addKitPlayer(brawler);
 
+        if(GameManager.getGame() != null) {
+            if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {
+                if(GameManager.getGame().isParticipating(player)) {
+                    player.setGameMode(GameMode.SURVIVAL);
+                    player.teleport(GameManager.getGame().getTeam(player).getSpawn(player));
+                } else {
+                    GameManager.addSpectator(player);
+                }
+            } else {
+                player.setGameMode(GameMode.ADVENTURE);
+                GameManager.addPlayer(player);
+            }
+        }
     }
 }

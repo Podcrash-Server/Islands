@@ -33,7 +33,8 @@ dependencies {
     testImplementation 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     implementation "org.reflections:reflections:0.9.11"
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation project(path: ":Engine")
+    implementation project(path: ":Engine:PacketWrapper")
+    implementation project(path: ":Engine:MCEngine")
 
     //implementation 'com.comphenix.protocol:ProtocolLib:4.4.0'
     testImplementation 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'

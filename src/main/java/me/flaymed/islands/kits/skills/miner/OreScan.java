@@ -68,6 +68,8 @@ public class OreScan extends Instant implements ICooldown {
         int bottomZ = playerZ - diagRadius;
         int higherZ = playerZ + diagRadius;
 
+        double offset = 0.5;
+
         boolean canceled = false;
 
         for (int x = bottomX; x <= higherX; x++) {
@@ -90,7 +92,7 @@ public class OreScan extends Instant implements ICooldown {
                     if (data == null)
                         break; //this should not happen unless it's a wooden pickaxe
                     if (block.getType().equals(data.ore)) {
-                        Location target = new Location(player.getWorld(), x, y, z);
+                        Location target = new Location(player.getWorld(), x + offset, y + offset, z + offset);
                         Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
                         Location loc = player.getLocation().setDirection(dir);
                         player.teleport(loc);

@@ -31,7 +31,8 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
         StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 3, true, true);
         player.getInventory().remove(Material.IRON_INGOT);
         setLastUsed(System.currentTimeMillis());
-        player.sendMessage(String.format("%sSkill> %sYou used: Quick mine!", ChatColor.BLUE, ChatColor.GRAY));
+        player.sendMessage(String.format("%sSkill> %sYou used %sQuick mine%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.BLUE, ChatColor.GRAY));
+
     }
 
     @Override

@@ -21,6 +21,7 @@ public class OreScan extends Instant implements ICooldown {
         GOLD(Material.GOLD_PICKAXE, Material.GOLD_ORE, ChatColor.YELLOW, "gold"),
         IRON(Material.IRON_PICKAXE, Material.IRON_ORE, ChatColor.WHITE, "iron"),
         COAL(Material.STONE_PICKAXE, Material.COAL_ORE, ChatColor.DARK_GRAY, "coal");
+
         private Material pickaxe;
         private Material ore;
         private ChatColor color;
@@ -72,6 +73,7 @@ public class OreScan extends Instant implements ICooldown {
 
         boolean canceled = false;
 
+        setLastUsed(System.currentTimeMillis());
         for (int x = bottomX; x <= higherX; x++) {
             if (canceled) {
                 canceled = false;
@@ -105,7 +107,6 @@ public class OreScan extends Instant implements ICooldown {
                 }
             }
         }
-        setLastUsed(System.currentTimeMillis());
     }
 
     @Override

@@ -20,18 +20,19 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
 
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
-        Player player = event.getPlayer();
-        if(!onCooldown()) {
-            if (player == this.getPlayer()) {
-                if (player.getItemInHand().equals(Material.IRON_INGOT)) {
-                    StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 3, true);
-                    player.getInventory().remove(Material.IRON_INGOT);
-                    setLastUsed(System.currentTimeMillis());
-                    player.sendMessage(String.format("%sSkill> %sYou used: Quick mine!", ChatColor.BLUE, ChatColor.GRAY));
-                }
-            }
-        } else this.getPlayer().sendMessage(getCooldownMessage());
 
+        Player player = getPlayer();
+        System.out.println(String.format("%s used quick mine!", player.getName()));
+        if (onCooldown()) {
+            getPlayer().sendMessage(getCooldownMessage());
+            return;
+        }
+        if (!player.getItemInHand().getType().equals(Material.IRON_INGOT))
+            return;
+        StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 3, true, true);
+        player.getInventory().remove(Material.IRON_INGOT);
+        setLastUsed(System.currentTimeMillis());
+        player.sendMessage(String.format("%sSkill> %sYou used %sQuick mine%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.BLUE, ChatColor.GRAY));
     }
 
     @Override

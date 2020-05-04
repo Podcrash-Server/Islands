@@ -13,128 +13,97 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.util.Vector;
 
 public class OreScan extends Instant implements ICooldown {
+    private final double radius = 8;
+    private final OreData[] oreArray;
 
+    private enum OreData {
+        DIAMOND(Material.DIAMOND_PICKAXE, Material.DIAMOND_ORE, ChatColor.AQUA, "diamond"),
+        GOLD(Material.GOLD_PICKAXE, Material.GOLD_ORE, ChatColor.YELLOW, "gold"),
+        IRON(Material.IRON_PICKAXE, Material.IRON_ORE, ChatColor.WHITE, "iron"),
+        COAL(Material.STONE_PICKAXE, Material.COAL_ORE, ChatColor.DARK_GRAY, "coal");
+        private Material pickaxe;
+        private Material ore;
+        private ChatColor color;
+        private String name;
+
+        OreData(Material pickaxe, Material ore, ChatColor color, String name) {
+            this.ore = ore;
+            this.color = color;
+            this.name = name;
+            this.pickaxe = pickaxe;
+        }
+    }
     public OreScan() {
-
+        this.oreArray = OreData.values();
     }
 
+    private OreData findByPickaxe(Material material) {
+        for (OreData data : oreArray) {
+            if (data.pickaxe.equals(material))
+                return data;
+        }
+        return null;
+    }
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
-        if(!onCooldown() && this.getPlayer() == event.getPlayer()) {
-            Player player = event.getPlayer();
-            Material inHand = player.getItemInHand().getType();
-            int playerX = player.getLocation().getBlockX();
-            int playerY = player.getLocation().getBlockY();
-            int playerZ = player.getLocation().getBlockZ();
+        Player player = event.getPlayer();
+        if (onCooldown()) {
+            player.sendMessage(getCooldownMessage());
+            return;
+        }
+        Material inHand = player.getItemInHand().getType();
+        int playerX = player.getLocation().getBlockX();
+        int playerY = player.getLocation().getBlockY();
+        int playerZ = player.getLocation().getBlockZ();
 
-            int radius = 8;
+        int diagRadius = (int) (radius * 1.414);
+        int vertRadius = (int) (radius * 1.732);
 
-            int diagRadius = (int) (radius * 1.414);
-            int vertRadius = (int) (radius * 1.732);
+        int bottomX = playerX - diagRadius;
+        int higherX = playerX + diagRadius;
 
-            int bottomX = playerX - diagRadius;
-            int higherX = playerX + diagRadius;
+        int bottomY = playerY - vertRadius;
+        int higherY = playerY + vertRadius;
 
-            int bottomY = playerY - vertRadius;
-            int higherY = playerY + vertRadius;
+        int bottomZ = playerZ - diagRadius;
+        int higherZ = playerZ + diagRadius;
 
-            int bottomZ = playerZ - diagRadius;
-            int higherZ = playerZ + diagRadius;
+        boolean canceled = false;
 
-            boolean canceled = false;
-
-            for (int x = bottomX; x <= higherX; x++) {
-
+        for (int x = bottomX; x <= higherX; x++) {
+            if (canceled) {
+                canceled = false;
+                break;
+            }
+            for (int y = bottomY; y <= higherY; y++) {
                 if (canceled) {
-                    canceled = false;
                     break;
                 }
-
-
-                for (int y = bottomY; y <= higherY; y++) {
-
+                for (int z = bottomZ; z <= higherZ; z++) {
                     if (canceled) {
                         break;
                     }
+                    Block block = player.getWorld().getBlockAt(x, y, z);
 
-                    for (int z = bottomZ; z <= higherZ; z++) {
-                        if (canceled) {
-                            break;
-                        }
-
-
-                        Block block = player.getWorld().getBlockAt(x, y, z);
-
-                        boolean searchConcluded = x + 1 >= higherX && y + 1 >= higherY && z + 1 >= higherZ;
-                        if (inHand.equals(Material.DIAMOND_PICKAXE)) {
-
-                            if (block.getType().equals(Material.DIAMOND_ORE)) {
-                                Location target = new Location(player.getWorld(), x, y, z);
-                                Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
-                                Location loc = player.getLocation().setDirection(dir);
-                                player.teleport(loc);
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %sdiamond ore%s! ", ChatColor.GRAY, ChatColor.AQUA, ChatColor.GRAY));
-                                canceled = true;
-                            } else if (searchConcluded) {
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%S No diamond ore found ;-;", ChatColor.GRAY));
-                                canceled = true;
-                            }
-                            continue;
-                        }
-
-                        if (inHand.equals(Material.GOLD_PICKAXE)) {
-                            if(block.getType().equals(Material.GOLD_ORE)) {
-                                Location target = new Location(player.getWorld(), x, y, z);
-                                Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
-                                Location loc = player.getLocation().setDirection(dir);
-                                player.teleport(loc);
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %sgold ore%s! ", ChatColor.GRAY, ChatColor.YELLOW, ChatColor.GRAY));
-                                canceled = true;
-                            } else if (searchConcluded) {
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%S No gold ore found ;-;", ChatColor.GRAY));
-                                canceled = true;
-                            }
-                            continue;
-                        }
-
-                        if (inHand.equals(Material.IRON_PICKAXE)) {
-                            if (block.getType().equals(Material.IRON_ORE)) {
-                                Location target = new Location(player.getWorld(), x, y, z);
-                                Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
-                                Location loc = player.getLocation().setDirection(dir);
-                                player.teleport(loc);
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %siron ore%s! ", ChatColor.GRAY, ChatColor.WHITE, ChatColor.GRAY));
-                                canceled = true;
-                            } else if (searchConcluded) {
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%S No iron ore found ;-;", ChatColor.GRAY));
-                                canceled = true;
-                            }
-                            continue;
-                        }
-
-                        if (inHand.equals(Material.STONE_PICKAXE)) {
-                            if (block.getType().equals(Material.COAL_ORE)) {
-                                Location target = new Location(player.getWorld(), x, y, z);
-                                Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
-                                Location loc = player.getLocation().setDirection(dir);
-                                player.teleport(loc);
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %scoal ore%s! ", ChatColor.GRAY, ChatColor.DARK_GRAY, ChatColor.GRAY));
-                                canceled = true;
-                            } else if (searchConcluded) {
-                                player.sendMessage(String.format(ChatColor.BLUE + "Skill>%S No coal ore found ;-;", ChatColor.GRAY));
-                                canceled = true;
-                            }
-                            continue;
-                        }
-
-
+                    boolean searchConcluded = x + 1 >= higherX && y + 1 >= higherY && z + 1 >= higherZ;
+                    OreData data = findByPickaxe(inHand);
+                    if (data == null)
+                        break; //this should not happen unless it's a wooden pickaxe
+                    if (block.getType().equals(data.ore)) {
+                        Location target = new Location(player.getWorld(), x, y, z);
+                        Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
+                        Location loc = player.getLocation().setDirection(dir);
+                        player.teleport(loc);
+                        player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %s%s ore%s! ", ChatColor.GRAY, data.color, data.name, ChatColor.GRAY));
+                        canceled = true;
+                    } else if (searchConcluded) {
+                        player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s No %s ore found ;-;", ChatColor.GRAY, data.name));
+                        canceled = true;
                     }
                 }
             }
-
-            setLastUsed(System.currentTimeMillis());
-
-        } else this.getPlayer().sendMessage(getCooldownMessage());
+        }
+        setLastUsed(System.currentTimeMillis());
     }
 
     @Override

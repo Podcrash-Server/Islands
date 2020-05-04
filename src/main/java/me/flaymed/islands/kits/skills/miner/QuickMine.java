@@ -21,11 +21,10 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
         Player player = event.getPlayer();
-        System.out.println(String.format("%s used quick mine!", player.getName()));
         if(!onCooldown()) {
             if (player == this.getPlayer()) {
                 if (player.getItemInHand().equals(Material.IRON_INGOT)) {
-                    StatusApplier.getOrNew(player).applyStatus(Status.MINEFAST, 10, 3, true);
+                    StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 3, true);
                     player.getInventory().remove(Material.IRON_INGOT);
                     setLastUsed(System.currentTimeMillis());
                     player.sendMessage(String.format("%sSkill> %sYou used: Quick mine!", ChatColor.BLUE, ChatColor.GRAY));
@@ -52,6 +51,6 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
 
     @Override
     public void afterConstruction() {
-        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.MINEFAST, Integer.MAX_VALUE, 2, true);
+        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.HASTE, Integer.MAX_VALUE, 2, true);
     }
 }

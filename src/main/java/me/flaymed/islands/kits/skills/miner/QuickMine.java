@@ -6,6 +6,7 @@ import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.IConstruct;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.Instant;
+import com.podcrash.api.plugin.PodcrashSpigot;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +22,6 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
         Player player = getPlayer();
-        System.out.println(String.format("%s used quick mine!", player.getName()));
         if (onCooldown()) {
             getPlayer().sendMessage(getCooldownMessage());
             return;
@@ -51,6 +51,7 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
 
     @Override
     public void afterConstruction() {
+        PodcrashSpigot.debugLog(getPlayer().getName() + " gained haste!");
         StatusApplier.getOrNew(getPlayer()).applyStatus(Status.HASTE, Integer.MAX_VALUE, 2, true);
     }
 }

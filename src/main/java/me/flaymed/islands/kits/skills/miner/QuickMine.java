@@ -21,7 +21,6 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
         Player player = getPlayer();
-        System.out.println(String.format("%s used quick mine!", player.getName()));
         if (onCooldown()) {
             getPlayer().sendMessage(getCooldownMessage());
             return;

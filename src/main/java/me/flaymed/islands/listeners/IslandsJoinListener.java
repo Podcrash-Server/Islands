@@ -5,6 +5,7 @@ import com.podcrash.api.game.GameState;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.kits.Skill;
 import com.podcrash.api.listeners.ListenerBase;
+import me.flaymed.islands.kits.classes.Berserker;
 import me.flaymed.islands.kits.classes.Miner;
 import me.flaymed.islands.kits.skills.miner.OreScan;
 import org.bukkit.GameMode;
@@ -25,8 +26,8 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Miner miner = new Miner(player); //miner is extends KitPlayer
-        KitPlayerManager.getInstance().addKitPlayer(miner);
+        Berserker berserker = new Berserker(player);
+        KitPlayerManager.getInstance().addKitPlayer(berserker);
 
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {

@@ -34,7 +34,10 @@ public class Leap extends Instant implements ICooldown {
 
         Player player = this.getPlayer();
 
-        if (!onCooldown()) {
+        if (onCooldown()) {
+            this.getPlayer().sendMessage(getCooldownMessage());
+            return;
+        } else {
             if (charges - uses > 0) {
                 Material m = player.getLocation().getBlock().getType();
                 Vector v;
@@ -53,12 +56,18 @@ public class Leap extends Instant implements ICooldown {
             } else {
                 player.sendMessage(String.format("%sSkill>%s You have used all of your available leaps!", ChatColor.BLUE, ChatColor.GRAY));
             }
-        } else this.getPlayer().sendMessage(getCooldownMessage());
+            setLastUsed(System.currentTimeMillis());
+        }
+    }
+
+    @Override
+    public boolean isInWater() {
+        return false;
     }
 
     @Override
     public String getName() {
-        return null;
+        return "Berserker Leap";
     }
 
     @Override
@@ -74,6 +83,7 @@ public class Leap extends Instant implements ICooldown {
             if (hits >= 3) {
                 uses -= 1;
                 hits = 0;
+                e.getAttacker().sendMessage(String.format("%sSkill> %sYou now have %s%s charges%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.BLUE, charges, ChatColor.GRAY));
             }
         }
     }

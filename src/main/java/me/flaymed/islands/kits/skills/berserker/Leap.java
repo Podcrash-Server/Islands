@@ -54,7 +54,7 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
             this.getPlayer().sendMessage(getCooldownMessage());
             return;
         } else {
-            if (charges > 0) {
+            if (getCurrentCharges() > 0) {
                 Material m = player.getLocation().getBlock().getType();
                 Vector v;
 
@@ -68,7 +68,7 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
                 player.getWorld().playSound(player.getLocation(), Sound.ENDERDRAGON_WINGS, 8, 1);
                 charges--;
 
-                player.sendMessage(String.format("%sSkill>%s You used % %s %s! You now have %s %s %s charges left!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.GREEN, getName(), ChatColor.GRAY, ChatColor.BLUE, charges, ChatColor.GRAY));
+                player.sendMessage(getCurrentChargeMessage());
             } else {
                 player.sendMessage(String.format("%sSkill>%s You have used all of your available leaps!", ChatColor.BLUE, ChatColor.GRAY));
             }

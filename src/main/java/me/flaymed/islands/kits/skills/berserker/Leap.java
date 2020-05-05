@@ -125,7 +125,11 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
     @EventHandler
     public void playerHit(DamageApplyEvent e) {
         if (e.getAttacker() == this.getPlayer()) {
-            task();
+            hits++;
+            if(hits >= 3) {
+                task();
+                hits = 0;
+            }
         }
     }
 

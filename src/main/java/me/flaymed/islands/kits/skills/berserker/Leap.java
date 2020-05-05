@@ -59,7 +59,7 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
                 Vector v;
 
                 if (m.equals(Material.STATIONARY_WATER) || m.equals(Material.WATER)) {
-                    v = player.getLocation().getDirection().multiply(2);
+                    v = player.getLocation().getDirection().multiply(1.75);
                 } else {
                     v = player.getLocation().getDirection().multiply(1.5);
                 }

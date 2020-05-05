@@ -28,7 +28,7 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
         }
         if (!player.getItemInHand().getType().equals(Material.IRON_INGOT))
             return;
-        StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 3, true, true);
+        StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 2, true, true);
         player.getInventory().remove(Material.IRON_INGOT);
         setLastUsed(System.currentTimeMillis());
         player.sendMessage(String.format("%sSkill> %sYou used %sQuick mine%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.BLUE, ChatColor.GRAY));
@@ -53,6 +53,6 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
     @Override
     public void afterConstruction() {
         PodcrashSpigot.debugLog(getPlayer().getName() + " gained haste!");
-        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.HASTE, Integer.MAX_VALUE, 2, true);
+        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.HASTE, Integer.MAX_VALUE, 1, true);
     }
 }

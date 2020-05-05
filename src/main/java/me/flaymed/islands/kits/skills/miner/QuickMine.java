@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class QuickMine extends Instant implements ICooldown, IConstruct {
 
@@ -29,7 +30,7 @@ public class QuickMine extends Instant implements ICooldown, IConstruct {
         if (!player.getItemInHand().getType().equals(Material.IRON_INGOT))
             return;
         StatusApplier.getOrNew(player).applyStatus(Status.HASTE, 10, 2, true, true);
-        player.getInventory().remove(Material.IRON_INGOT);
+        player.getInventory().removeItem(new ItemStack(Material.IRON_INGOT, 1));
         setLastUsed(System.currentTimeMillis());
         player.sendMessage(String.format("%sSkill> %sYou used %sQuick mine%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.BLUE, ChatColor.GRAY));
 

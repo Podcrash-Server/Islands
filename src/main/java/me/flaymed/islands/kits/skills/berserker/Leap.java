@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.util.Vector;
 import java.util.List;
 
-public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
+public class Leap extends Instant implements ICooldown, ICharge {
 
     private final float hitbox = 0.45f;
     private CollideBeforeHitGround hitGround;
@@ -136,32 +136,4 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
         }
     }
 
-    @Override
-    public void afterConstruction() {
-        WrapperPlayServerWorldParticles packet = ParticleGenerator.createParticle(EnumWrappers.Particle.CRIT, 2);
-        this.hitGround = new CollideBeforeHitGround(getPlayer(), 1, hitbox, hitbox, hitbox)
-                .then(() -> {
-                    SkillUseEvent event = new SkillUseEvent(this);
-                    Bukkit.getPluginManager().callEvent(event);
-                    if(event.isCancelled()) return;
-                    List<Entity> entities = CollideBeforeHitGround.getValidEntitiesInRange(getPlayer(), hitbox, hitbox, hitbox);
-                    if (entities.size() == 0) return;
-                    getPlayer().setVelocity(new Vector(0, 0, 0));
-                    for (Entity entity : entities) {
-                        if (entity instanceof LivingEntity && entity != getPlayer() && !isAlly((LivingEntity) entity)) {
-                            if (entity instanceof Player && GameManager.isSpectating((Player) entity)) break;
-                            LivingEntity living = (LivingEntity) entity;
-                            getPlayer().getWorld().playSound(getPlayer().getLocation(), Sound.ZOMBIE_WOOD, 2f, 0.2f);
-                            DamageApplier.damage(living, getPlayer(), 8, this, false);
-
-                            getPlayer().sendMessage(getUsedMessage(living));
-
-                            break; //only attack one player
-                        }
-                    }
-                }).doWhile(() -> {
-                    packet.setLocation(getPlayer().getLocation());
-                    PacketUtil.asyncSend(packet, getPlayers());
-                });
-    }
 }

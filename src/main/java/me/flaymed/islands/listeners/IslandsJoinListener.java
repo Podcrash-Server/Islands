@@ -26,8 +26,8 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Berserker berserker = new Berserker(player);
-        KitPlayerManager.getInstance().addKitPlayer(berserker);
+        Miner miner = new Miner(player);
+        KitPlayerManager.getInstance().addKitPlayer(miner);
 
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {

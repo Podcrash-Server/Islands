@@ -6,6 +6,6 @@ import org.bukkit.entity.Player;
 
 public class Berserker extends IslandsPlayer {
     public Berserker(Player player) {
-        super(player, "Miner", Leap.class);
+        super(player, "Berserker", Leap.class);
     }
 }

@@ -94,7 +94,7 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
 
     @Override
     public int getCurrentCharges() {
-        return 8;
+        return charges;
     }
 
     @Override

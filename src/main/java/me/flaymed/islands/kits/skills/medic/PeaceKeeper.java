@@ -42,7 +42,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
 
             if (e.getCurrentItem().getType().equals(chestplate) || e.getCurrentItem().getType().equals(leggings) || e.getCurrentItem().getType().equals(sword)) {
                 e.setCancelled(true);
-                player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, e.getCurrentItem().getType(), kit));
+                player.sendMessage(String.format("%s Skill> %sYou cannot use this item as a %s!", ChatColor.BLUE, ChatColor.GRAY, kit));
             }
 
         }
@@ -57,7 +57,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
         if (player == getPlayer()) {
             if (item.getType().equals(chestplate) || item.getType().equals(leggings) || item.getType().equals(sword)) {
                 e.setCancelled(true);
-                player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, item.getType(), kit));
+                player.sendMessage(String.format("%s Skill> %sYou cannot use this item as a %s!", ChatColor.BLUE, ChatColor.GRAY, kit));
             }
         }
 

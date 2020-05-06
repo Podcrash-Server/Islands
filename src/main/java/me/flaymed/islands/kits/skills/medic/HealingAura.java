@@ -5,12 +5,9 @@ import com.podcrash.api.effect.status.StatusApplier;
 import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.Drop;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
-
-import java.util.HashSet;
 import java.util.List;
 
 public class HealingAura extends Drop implements ICooldown {
@@ -28,12 +25,20 @@ public class HealingAura extends Drop implements ICooldown {
         }
         this.setLastUsed(System.currentTimeMillis());
 
-        Entity[] entities = getCloseByEntities(getPlayer().getLocation(), 6);
+        List<LivingEntity> entities = getPlayer().getWorld().getLivingEntities();
 
-        for (Entity entity : entities) {
+        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.REGENERATION, 5, 1, true);
+
+        for (LivingEntity entity : entities) {
             if (entity instanceof Player) {
-                Player effectedPlayer = (Player) entity;
-                StatusApplier.getOrNew(effectedPlayer).applyStatus(Status.REGENERATION, 5, 1, true);
+                Player player1 = (Player) entity;
+                Player player2 = getPlayer();
+
+                if (distance(player1.getLocation().getBlockX(), player1.getLocation().getBlockZ(), player2.getLocation().getBlockX(), player2.getLocation().getBlockZ()) <= 5.0) {
+                    StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
+                }
+
+
             }
         }
 
@@ -53,21 +58,9 @@ public class HealingAura extends Drop implements ICooldown {
         return ItemType.NULL;
     }
 
-    public Entity[] getCloseByEntities(Location l, int radius) {
-        int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
-        HashSet<Entity> radiusEntities = new HashSet<Entity>();
-        for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
-            for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
-                int x = (int) l.getX(), y = (int) l.getY(), z = (int) l.getZ();
-                for (Entity e : new Location(l.getWorld(), x + (chX * 16), y, z + (chZ * 16)).getChunk().getEntities()) {
-                    if (e.getLocation().distance(l) <= radius
-                            && e.getLocation().getBlock() != l.getBlock()) {
-                        radiusEntities.add(e);
-                    }
-                }
-            }
-        }
-        return radiusEntities.toArray(new Entity[radiusEntities.size()]);
+    private double distance(int x1, int z1, int x2, int z2) {
+        // Calculating distance
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2));
     }
 
 }

@@ -5,6 +5,7 @@ import com.podcrash.api.game.GameState;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
 import me.flaymed.islands.kits.classes.Berserker;
+import me.flaymed.islands.kits.classes.Medic;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,8 +22,8 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Berserker berserker = new Berserker(player);
-        KitPlayerManager.getInstance().addKitPlayer(berserker);
+        Medic medic = new Medic(player);
+        KitPlayerManager.getInstance().addKitPlayer(medic);
 
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {

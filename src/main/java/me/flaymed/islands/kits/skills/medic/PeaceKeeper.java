@@ -10,7 +10,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,6 +56,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
 
         if (player == getPlayer()) {
             if (item == chestplate || item == leggings || item == sword) {
+                e.setCancelled(true);
                 player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, item.getType(), kit));
             }
         }

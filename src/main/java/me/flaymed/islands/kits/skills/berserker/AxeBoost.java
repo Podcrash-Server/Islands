@@ -2,7 +2,6 @@ package me.flaymed.islands.kits.skills.berserker;
 
 import com.podcrash.api.damage.Cause;
 import com.podcrash.api.events.DamageApplyEvent;
-import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.skilltypes.Passive;
 import org.bukkit.event.EventHandler;
 

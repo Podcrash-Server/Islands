@@ -76,6 +76,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
                 if (holding.equals(chestplate) || holding.equals(leggings) || holding.equals(sword)) {
                     e.setCancelled(true);
                     player.sendMessage(noUseMessage);
+                    player.updateInventory();
                 }
             }
         }

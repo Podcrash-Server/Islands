@@ -13,7 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class PeaceKeeper extends Passive implements IConstruct {
 
@@ -73,7 +72,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
         Material holding = player.getItemInHand().getType();
 
         if (player == getPlayer()) {
-            if (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
+            if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (holding.equals(chestplate) || holding.equals(leggings) || holding.equals(sword)) {
                     e.setCancelled(true);
                     player.sendMessage(noUseMessage);

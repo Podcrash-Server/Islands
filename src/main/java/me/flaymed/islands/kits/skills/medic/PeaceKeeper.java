@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class PeaceKeeper extends Passive implements IConstruct {
 
-    private ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-    private ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
-    private ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+    private Material chestplate = Material.DIAMOND_CHESTPLATE;
+    private Material leggings = Material.DIAMOND_LEGGINGS;
+    private Material sword = Material.DIAMOND_SWORD;
     private String kit = "Medic";
 
     public PeaceKeeper() {
@@ -40,7 +40,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
 
         if (player == getPlayer()) {
 
-            if (e.getCurrentItem() == chestplate || e.getCurrentItem() == leggings || e.getCurrentItem() == sword) {
+            if (e.getCurrentItem().getType().equals(chestplate) || e.getCurrentItem().getType().equals(leggings) || e.getCurrentItem().getType().equals(sword)) {
                 e.setCancelled(true);
                 player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, e.getCurrentItem().getType(), kit));
             }
@@ -55,7 +55,7 @@ public class PeaceKeeper extends Passive implements IConstruct {
         Item item = e.getItem();
 
         if (player == getPlayer()) {
-            if (item == chestplate || item == leggings || item == sword) {
+            if (item.getType().equals(chestplate) || item.getType().equals(leggings) || item.getType().equals(sword)) {
                 e.setCancelled(true);
                 player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, item.getType(), kit));
             }

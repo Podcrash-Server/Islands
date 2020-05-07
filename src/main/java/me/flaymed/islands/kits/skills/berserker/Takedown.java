@@ -72,6 +72,8 @@ public class Takedown extends Instant implements ICooldown, IConstruct {
 
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
+        if (onCooldown()) return;
+
         this.setLastUsed(System.currentTimeMillis());
         getPlayer().setFallDistance(0);
         hitGround.run();

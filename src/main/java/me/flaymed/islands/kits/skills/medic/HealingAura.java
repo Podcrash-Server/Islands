@@ -35,7 +35,8 @@ public class HealingAura extends Drop implements ICooldown {
                 Player player2 = getPlayer();
 
                 if (distance(player1.getLocation().getBlockX(), player1.getLocation().getBlockZ(), player2.getLocation().getBlockX(), player2.getLocation().getBlockZ()) <= 5.0) {
-                    StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
+
+                    if (isAlly(player1)) StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
                 }
 
 

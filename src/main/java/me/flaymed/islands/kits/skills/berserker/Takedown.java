@@ -52,7 +52,7 @@ public class Takedown extends Instant implements ICooldown, IConstruct {
                             if (entity instanceof Player && GameManager.isSpectating((Player) entity)) break;
                             LivingEntity living = (LivingEntity) entity;
                             getPlayer().getWorld().playSound(getPlayer().getLocation(), Sound.ZOMBIE_WOOD, 2f, 0.2f);
-                            DamageApplier.damage(living, getPlayer(), 5, this, false);
+                            DamageApplier.damage(living, getPlayer(), 8, this, false);
                             /*
                             StatusApplier.getOrNew((Player) entity).applyStatus(Status.SLOW, effect, 3);
                             StatusApplier.getOrNew(getPlayer()).applyStatus(Status.SLOW, effect, 3);

@@ -7,6 +7,7 @@ import com.podcrash.api.listeners.ListenerBase;
 import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.kits.classes.Berserker;
 import me.flaymed.islands.kits.classes.Medic;
+import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinBuilder;
 import me.flaymed.islands.util.ore.VeinGen;
 import org.bukkit.GameMode;
@@ -55,16 +56,15 @@ public class IslandsJoinListener extends ListenerBase {
         Action action = e.getAction();
         if (action != Action.RIGHT_CLICK_BLOCK)
             return;
-        VeinBuilder builder = new VeinBuilder()
-            .setOreChance(0.4)
-            .setContinueChance(0.6)
-            .setTries(15);
-        VeinGen generator = VeinGen.fromBuilder(builder);
-        generator.startLocation(e.getClickedBlock().getLocation(), ore);
-        int max = 6;
-        while (generator.getOreGenerated() < max && generator.hasNext())
-            generator.next();
+        OreVeinSetting setting = OreVeinSetting.findByOre(ore);
+        if (setting == null)
+            return;
+        e.setCancelled(true);
 
-        PodcrashSpigot.debugLog("Generated " + generator.getOreGenerated() + " of " + ore);
+        VeinGen generator = VeinGen.fromOreSetting(setting);
+        generator.startLocation(e.getClickedBlock().getLocation());
+        generator.generate();
+
+        player.sendMessage("Generated " + generator.getOreGenerated() + " of " + ore);
     }
 }

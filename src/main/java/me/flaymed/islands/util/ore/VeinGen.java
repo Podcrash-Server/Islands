@@ -2,6 +2,7 @@ package me.flaymed.islands.util.ore;
 
 import com.podcrash.api.plugin.PodcrashSpigot;
 import com.podcrash.api.world.BlockUtil;
+import net.jafama.FastMath;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,9 +18,8 @@ import java.util.Set;
 
 public class VeinGen {
     private final Random random = new Random();
-    private final double oreChance;
     private final double continueChance;
-    private final int tries;
+    private final int tries, min, max;
     private final Vector[] possDir;
     private final Object minerLock;
 
@@ -28,69 +28,101 @@ public class VeinGen {
     private boolean stillValid;
     private MaterialData ore;
     private int oreGenerated;
+    private Vector lastVector;
+    private int lastAir = 0;
 
+    public static VeinGen fromOreSetting(OreVeinSetting setting) {
+        VeinBuilder builder = new VeinBuilder()
+                .setContinueChance(setting.getContinueChance())
+                .setTries(setting.getTries())
+                .setMin(setting.getMin())
+                .setMax(setting.getMax())
+                .setOre(setting.getOre());
+        return fromBuilder(builder);
+    }
     public static VeinGen fromBuilder(VeinBuilder builder) {
         return new VeinGen(builder);
     }
     private VeinGen(VeinBuilder builder) {
         this.minerLock = new Object();
-        this.oreChance = builder.oreChance;
         this.continueChance = builder.continueChance;
         this.possDir = builder.allowedDirections.toArray(new Vector[0]);
         this.tries = builder.tries;
+        this.min = builder.min;
+        this.max = builder.max;
+        this.ore = new MaterialData(builder.ore);
         this.cursorSet = false;
         this.oreGenerated = 0;
         this.stillValid = true;
     }
 
-    public void startLocation(Location location, Material ore) {
-        this.startLocation(location, new MaterialData(ore));
-    }
     /**
      * The assumption is that the location has a material of that ore.
      * @param location
-     * @param ore
      */
-    public void startLocation(Location location, MaterialData ore) {
+    public void startLocation(Location location) {
         if (this.cursorSet) throw new IllegalStateException("Please run a new VeinGen for each individual ore.");
         this.cursor = location;
         this.cursorSet = true;
-        this.ore = ore;
     }
 
-    public boolean next() {
+    public void generate() {
+        if (!this.cursorSet)
+            throw new IllegalStateException("Please set a start location using startLocation!");
+        //place the block initially
+        //BlockUtil.setBlock(cursor, ore.getItemType());
+
+        //find a randomized amount between the max and min to give ores.
+        int maxOreGenerated = min + random.nextInt(max - min + 1);
+        while(getOreGenerated() < maxOreGenerated) {
+            if (!generateVein())
+                break;
+        }
+    }
+
+    /**
+     * Generate a vein
+     * @return true if there is a place to generate the vein. False if there is no place to generate a vein
+     */
+    public boolean generateVein() {
         synchronized (minerLock) {
             if (!this.stillValid) return false;
-            for (int i = 0; i < tries; i++) {
-                Location currentCursor = cursor.clone();
-                //if the chance to continue is unlucky, stop
-                if (random.nextDouble() > this.continueChance) {
-                    break;
-                }
-                //otherwise find a random direction.
-                Vector randomDir = possDir[random.nextInt(possDir.length)];
-                Location newLoc = currentCursor.add(randomDir);
+            Location currentCursor = cursor.clone();
+            //find a random direction.
+            Vector randomDir = findRandomVector();
+            Location newLoc = currentCursor.add(randomDir);
 
-                //todo: use material data instead
-                Block block = newLoc.getBlock();
-                Material type = block.getType();
-                if (random.nextDouble() > this.oreChance)
-                    break;
-                if (type == Material.AIR) {
-                    stillValid = false;
-                    break;
-                }
-                if (type != Material.STONE)
-                    break;
-                BlockUtil.setBlock(newLoc, ore.getItemType());
-
-                oreGenerated++;
-                PodcrashSpigot.debugLog(currentCursor.clone().add(cursor.clone().multiply(-1)).toVector().toString());
-                this.cursor = currentCursor;
+            //todo: use material data instead
+            Block block = newLoc.getBlock();
+            Material type = block.getType();
+            if (type == ore.getItemType())
                 return true;
+            if (type != Material.STONE) {//if the chosen block is ore itself or not stone, cancel
+                lastAir++;
+                return lastAir < 5;
             }
+
+            BlockUtil.setBlock(newLoc, ore.getItemType());
+            oreGenerated++;
+
+            this.cursor = currentCursor;
+            lastAir = 0;
+            return true;
         }
-        return false;
+    }
+
+    /**
+     * First, find a random vector using random.nextInt
+     * if it's the same as the last opposite vector, rerun the algorithm.
+     * This is to prevent the vein going back on itself.
+     * @return a random vector
+     */
+    private Vector findRandomVector() {
+        Vector r = possDir[random.nextInt(possDir.length)];
+        if (r == lastVector)
+            return findRandomVector();
+        this.lastVector = r.clone().multiply(-1);
+        return r;
     }
 
     public boolean hasNext() {

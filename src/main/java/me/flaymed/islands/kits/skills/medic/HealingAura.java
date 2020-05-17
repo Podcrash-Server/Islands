@@ -1,13 +1,22 @@
 package me.flaymed.islands.kits.skills.medic;
 
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
+import com.podcrash.api.effect.particle.ParticleGenerator;
 import com.podcrash.api.effect.status.Status;
 import com.podcrash.api.effect.status.StatusApplier;
+import com.podcrash.api.game.GTeam;
+import com.podcrash.api.game.GameManager;
+import com.podcrash.api.game.TeamEnum;
 import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.Drop;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.util.Vector;
+
 import java.util.List;
 
 public class HealingAura extends Drop implements ICooldown {
@@ -37,6 +46,18 @@ public class HealingAura extends Drop implements ICooldown {
                 if (distance(player1.getLocation().getBlockX(), player1.getLocation().getBlockZ(), player2.getLocation().getBlockX(), player2.getLocation().getBlockZ()) <= 5.0) {
 
                     if (isAlly(player1)) StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
+
+                    GTeam team = GameManager.getGame().getTeam(player1);
+                    TeamEnum teamEnum = team.getTeamEnum();
+
+                    Vector v = new Location(player1.getWorld(), player1.getLocation().getBlockX(), player1.getLocation().getBlockY() + 2, player1.getLocation().getBlockZ()).getDirection();
+
+
+                    WrapperPlayServerWorldParticles particle = ParticleGenerator.createParticle(v,
+                            EnumWrappers.Particle.REDSTONE,1,
+                            teamEnum.getRed()/255, teamEnum.getGreen()/255, teamEnum.getBlue()/255);
+                    particle.setParticleData(1);
+
                 }
 
 

@@ -24,10 +24,11 @@ public class Barrage extends Passive {
             int arrowX = (int) arrow.getLocation().getX();
             int arrowY = (int) arrow.getLocation().getY();
             int arrowZ = (int) arrow.getLocation().getZ();
+            int offset = 3;
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 4; i++) {
 
-                arrow.getWorld().spawnArrow(new Location(arrow.getWorld(), arrowX + rand.nextInt(2 + 2) - 2, arrowY + rand.nextInt(2 + 2) - 2, arrowZ + rand.nextInt(2 + 2) - 2), arrow.getVelocity(), 3, 3).setShooter(e.getEntity());
+                arrow.getWorld().spawnArrow(new Location(arrow.getWorld(), arrowX + rand.nextInt(offset + offset) - offset, arrowY + rand.nextInt(offset + 0) - 0, arrowZ + rand.nextInt(offset + offset) - offset), arrow.getVelocity(), 3, 3).setShooter(e.getEntity());
             }
 
             getPlayer().getInventory().remove(new ItemStack(Material.ARROW, 1));

@@ -4,6 +4,7 @@ import com.podcrash.api.game.GameManager;
 import com.podcrash.api.game.GameState;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
+import me.flaymed.islands.kits.classes.Archer;
 import me.flaymed.islands.kits.classes.Berserker;
 import me.flaymed.islands.kits.classes.Bomber;
 import me.flaymed.islands.kits.classes.Medic;
@@ -23,8 +24,8 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Bomber bomber = new Bomber(player);
-        KitPlayerManager.getInstance().addKitPlayer(bomber);
+        Archer archer = new Archer(player);
+        KitPlayerManager.getInstance().addKitPlayer(archer);
 
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {

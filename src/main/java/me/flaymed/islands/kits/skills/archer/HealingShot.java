@@ -12,6 +12,7 @@ import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.Instant;
 import com.podcrash.api.kits.skilltypes.Passive;
+import me.flaymed.islands.util.IslandsParticleGenerator;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -56,16 +57,7 @@ public class HealingShot extends Passive implements ICooldown {
 
                               if (isAlly(player1)) StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
 
-                              GTeam team = GameManager.getGame().getTeam(player1);
-                              TeamEnum teamEnum = team.getTeamEnum();
-
-                              Vector v = new Location(player1.getWorld(), player1.getLocation().getBlockX(), player1.getLocation().getBlockY() + 2, player1.getLocation().getBlockZ()).getDirection();
-
-
-                              WrapperPlayServerWorldParticles particle = ParticleGenerator.createParticle(v,
-                                      EnumWrappers.Particle.REDSTONE,1,
-                                      teamEnum.getRed()/255, teamEnum.getGreen()/255, teamEnum.getBlue()/255);
-                              particle.setParticleData(1);
+                              IslandsParticleGenerator.particleOverPlayer(player1);
                           }
 
 

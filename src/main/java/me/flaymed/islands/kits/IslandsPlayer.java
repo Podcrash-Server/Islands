@@ -32,6 +32,17 @@ public class IslandsPlayer extends KitPlayer {
         this.skills = skillsSet;
     }
 
+    public void addSkill(Class<? extends Skill> skill) {
+
+        try {
+            Skill newSkill = skill.newInstance();
+            this.skills.add(newSkill);
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public String getName() {
         return name;

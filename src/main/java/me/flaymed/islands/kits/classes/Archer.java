@@ -7,6 +7,6 @@ import org.bukkit.entity.Player;
 
 public class Archer extends IslandsPlayer {
     public Archer(Player player) {
-        super(player, "Archer", Barrage.class, RopedArrow.class);
+        super(player, "Archer", Barrage.class, SkillSelect.class);
     }
 }

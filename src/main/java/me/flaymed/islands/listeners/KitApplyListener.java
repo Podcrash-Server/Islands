@@ -16,7 +16,7 @@ public class KitApplyListener extends ListenerBase {
     public void kit(ApplyKitEvent e) {
         KitPlayer kitPlayer = e.getKitPlayer();
         Player p = kitPlayer.getPlayer();
-
+        
         p.sendMessage("You are a " + kitPlayer.getName());
     }
 }

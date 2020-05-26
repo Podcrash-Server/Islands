@@ -99,7 +99,7 @@ public class RadiusGenerator extends BridgeGenerator {
                 for (int x = startX; x <= endX; x++) {
                     //save up some extra calculations here
                     double xSquared = pow2(x - midX);
-                    double shortXQuared = pow2((x - midX) - 2);
+                    double shortXQuared = pow2((x - midX) - borderFactor);
                     for (int z = startZ; z <= endZ; z++) {
                         double distSquared = xSquared + pow2(z - midZ);
                         double shortDistSquared = shortXQuared + pow2( (z - midZ) - borderFactor);

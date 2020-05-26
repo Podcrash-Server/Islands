@@ -74,13 +74,23 @@ public class RadiusGenerator extends BridgeGenerator {
 
                 int endX = (int) (midX + currentRadius[0]);
                 int endZ = (int) (midZ + currentRadius[0]);
+
+                //this is so there is a limit on which part of the bridge is actually being built at a time
+                final double borderFactor = 2;
                 for (int x = startX; x <= endX; x++) {
+                    double xSquared = pow2(x);
+                    double shortXQuared = pow2(x - 2);
                     for (int z = startZ; z <= endZ; z++) {
+                        double distSquared = xSquared + pow2(z);
+                        double shortDistSquared = shortXQuared + pow2( z - borderFactor);
+                        if (distSquared < shortDistSquared)
+                            continue;
                         String possKey = x + ":" + z;
                         BridgeSection section = sectionMap.get(possKey);
                         if (section == null)
                             continue;
                         placeSection(world, section);
+                        sectionMap.remove(possKey);
                     }
                 }
                 PodcrashSpigot.debugLog("Placed at " + currentRadius[0]);

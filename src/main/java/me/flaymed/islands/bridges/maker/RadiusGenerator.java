@@ -94,15 +94,19 @@ public class RadiusGenerator extends BridgeGenerator {
                 //this is so there is a limit on which part of the bridge is actually being built at a time
                 //2 is default (from noid's code)
                 final double borderFactor = 2;
+
+                final double currRadiusSquared = pow2(currentRadius[0]);
                 for (int x = startX; x <= endX; x++) {
                     //save up some extra calculations here
-                    double xSquared = pow2(x);
-                    double shortXQuared = pow2(x - 2);
+                    double xSquared = pow2(x - midX);
+                    double shortXQuared = pow2((x - midX) - 2);
                     for (int z = startZ; z <= endZ; z++) {
-                        double distSquared = xSquared + pow2(z);
-                        double shortDistSquared = shortXQuared + pow2( z - borderFactor);
-                        //if it's shorter, then don't go past
-                        if (distSquared < shortDistSquared)
+                        double distSquared = xSquared + pow2(z - midZ);
+                        double shortDistSquared = shortXQuared + pow2( (z - midZ) - borderFactor);
+                        // if it's larger, then don't go past
+                        // if it's shorter, then don't go past
+                        if (distSquared > currRadiusSquared ||
+                            distSquared < shortDistSquared)
                             continue;
                         String possKey = x + ":" + z;
                         BridgeSection section = sectionMap.get(possKey);

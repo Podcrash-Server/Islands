@@ -85,6 +85,10 @@ public class IslandsGame extends Game {
         return Collections.emptyList();
     }
 
+    /**
+     * Uses a consumer to avoid the creation of an array to loop through. (these bois are pretty big)
+     * @param blockConsumer
+     */
     public void consumeChest(Consumer<Chest> blockConsumer) {
         List<Point> chestPoints = ((IslandsMap) this.getMap()).getChests();
         for (Point point : chestPoints) {
@@ -95,6 +99,10 @@ public class IslandsGame extends Game {
         }
     }
 
+    /**
+     * Uses a consumer to avoid the creation of an array to loop through. (these bois are pretty big)
+     * @param blockConsumer
+     */
     public void consumeOre(Consumer<Block> blockConsumer) {
         List<Point> orePoints = ((IslandsMap) this.getMap()).getChests();
         final Set<Material> ores = new HashSet<>(Arrays.asList(Material.DIAMOND_ORE, Material.REDSTONE_ORE, Material.EMERALD_ORE, Material.GOLD_ORE));
@@ -120,6 +128,12 @@ public class IslandsGame extends Game {
         }
     }
 
+    /**
+     * Use reflection to find which bridge generator to use.
+     * @param bridgeType
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void makeBridgeGenerator(String bridgeType) throws IOException, ClassNotFoundException {
         String path = "me.flaymed.islands.bridges.maker";
         ClassPath cp = ClassPath.from(BridgeGenerator.class.getClassLoader());
@@ -134,6 +148,7 @@ public class IslandsGame extends Game {
             if (!isSameType)
                 continue;
             this.bridgeGenerator = (BridgeGenerator) emptyConstructor(bridgeClass);
+            break;
         }
     }
 

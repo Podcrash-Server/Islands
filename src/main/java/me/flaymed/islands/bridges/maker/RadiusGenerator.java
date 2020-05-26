@@ -16,6 +16,9 @@ import java.util.Map;
 
 import static net.jafama.FastMath.*;
 
+/**
+ * Using a circle of the entire bridge, place blocks closer and closer to the middle.
+ */
 @BridgeType(type="radius")
 public class RadiusGenerator extends BridgeGenerator {
     private double midX;
@@ -29,6 +32,13 @@ public class RadiusGenerator extends BridgeGenerator {
         this.sectionMap = new LinkedHashMap<>();
     }
 
+    /**
+     * Split up the sections to a map to have a better way than just looping through the entire xz plane to find the section we want.
+     * Courtesy of noid's code.
+     *
+     * Find the minimum and maximum radii. This will dictate which blocks to place within the bridge.
+     * @param islandsMap - the map used that stores the data.
+     */
     @Override
     public void setUp(IslandsMap islandsMap) {
         List<BridgePoint> bridgePoints = islandsMap.getBridgeData();
@@ -44,6 +54,7 @@ public class RadiusGenerator extends BridgeGenerator {
             for (BridgeSection section : sections) {
                 int x = (int) section.getX();
                 int z = (int) section.getZ();
+                //create the key which is formatted like so: %:%, x,z
                 String key = x + ":" + z;
                 sectionMap.put(key, section);
                 double dist = sqrt( pow2(midX - x) + pow2(midZ - z));
@@ -56,6 +67,11 @@ public class RadiusGenerator extends BridgeGenerator {
         this.minRadius = (int) floor(min) - 1;
     }
 
+    /**
+     * Every delay ticks or so, place blocks in a circlular fashion.
+     * @param world
+     * @param delay
+     */
     @Override
     public void generate(World world, int delay) {
         final double[] currentRadius = {maxRadius};
@@ -76,13 +92,16 @@ public class RadiusGenerator extends BridgeGenerator {
                 int endZ = (int) (midZ + currentRadius[0]);
 
                 //this is so there is a limit on which part of the bridge is actually being built at a time
+                //2 is default (from noid's code)
                 final double borderFactor = 2;
                 for (int x = startX; x <= endX; x++) {
+                    //save up some extra calculations here
                     double xSquared = pow2(x);
                     double shortXQuared = pow2(x - 2);
                     for (int z = startZ; z <= endZ; z++) {
                         double distSquared = xSquared + pow2(z);
                         double shortDistSquared = shortXQuared + pow2( z - borderFactor);
+                        //if it's shorter, then don't go past
                         if (distSquared < shortDistSquared)
                             continue;
                         String possKey = x + ":" + z;
@@ -94,6 +113,7 @@ public class RadiusGenerator extends BridgeGenerator {
                     }
                 }
                 PodcrashSpigot.debugLog("Placed at " + currentRadius[0]);
+                //decrease the radius little by little
                 currentRadius[0]--;
             }
         };

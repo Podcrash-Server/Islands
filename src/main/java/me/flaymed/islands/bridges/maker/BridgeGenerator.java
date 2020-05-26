@@ -16,6 +16,11 @@ public abstract class BridgeGenerator {
 
     public abstract void generate(World world, int delay);
 
+    /**
+     * Take a given section and place blocks onto the world from the section's coordinates
+     * @param world
+     * @param section
+     */
     protected void placeSection(World world, BridgeSection section) {
         Map<String, Object> blockMap = section.getBlockMap();
         for(Map.Entry<String, Object> entry : blockMap.entrySet()) {

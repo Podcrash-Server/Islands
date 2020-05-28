@@ -13,6 +13,7 @@ import me.flaymed.islands.game.scoreboard.IslandsScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 
@@ -30,7 +31,6 @@ public class IslandsGame extends Game {
     public IslandsGame(int id, String name) {
         super(id, name, GameType.DOM);
         this.board = new IslandsScoreboard(id);
-        setStage(GameStage.PREPARE);
     }
 
     @Override
@@ -103,8 +103,7 @@ public class IslandsGame extends Game {
      * Uses a consumer to avoid the creation of an array to loop through. (these bois are pretty big)
      * @param blockConsumer
      */
-    public void consumeOre(Consumer<Block> blockConsumer) {
-        List<Point> orePoints = ((IslandsMap) this.getMap()).getChests();
+    public void consumeOre(List<Point> orePoints, Consumer<Block> blockConsumer) {
         final Set<Material> ores = new HashSet<>(Arrays.asList(Material.DIAMOND_ORE, Material.REDSTONE_ORE, Material.EMERALD_ORE, Material.GOLD_ORE));
         for (Point point : orePoints) {
             Block block = getGameWorld().getBlockAt((int) point.getX(), (int) point.getY(), (int) point.getZ());
@@ -150,6 +149,21 @@ public class IslandsGame extends Game {
             this.bridgeGenerator = (BridgeGenerator) emptyConstructor(bridgeClass);
             break;
         }
+    }
+
+    public void fallBridge(int delay) {
+        Bukkit.broadcastMessage("fall the bridges!");
+        World world;
+        if ((world = getGameWorld()) == null)
+            return;
+        bridgeGenerator.generate(world, delay);
+    }
+    public void destroyBridge(int delay) {
+        Bukkit.broadcastMessage("destroy the bridges!");
+        World world;
+        if ((world = getGameWorld()) == null)
+            return;
+        bridgeGenerator.destroy(world, delay);
     }
 
     public BridgeGenerator getBridgeGenerator() {

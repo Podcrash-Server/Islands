@@ -2,7 +2,10 @@ package me.flaymed.islands;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.podcrash.api.game.GameManager;
+import com.podcrash.api.plugin.PodcrashSpigot;
+import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
+import me.flaymed.islands.listeners.IslandsGameListener;
 import me.flaymed.islands.listeners.IslandsJoinListener;
 import me.flaymed.islands.listeners.KitApplyListener;
 import org.bukkit.Bukkit;
@@ -18,11 +21,13 @@ public class Main extends JavaPlugin {
         GameManager.createGame(game);
 
         registerListeners();
+        PodcrashSpigot.getInstance().registerCommand(new DropBridgeCommand());
     }
 
     public void registerListeners() {
         new IslandsJoinListener(this);
         new KitApplyListener(this);
+        new IslandsGameListener(this);
     }
     @Override
     public void onDisable() {

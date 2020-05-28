@@ -1,11 +1,13 @@
 package me.flaymed.islands.bridges.maker;
 
+import com.google.common.collect.Maps;
 import com.podcrash.api.db.pojos.map.BridgePoint;
 import com.podcrash.api.db.pojos.map.BridgeSection;
 import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.db.pojos.map.Point;
 import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.annotations.BridgeType;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import static net.jafama.FastMath.*;
 
@@ -40,7 +43,7 @@ public class RadiusGenerator extends BridgeGenerator {
      * @param islandsMap - the map used that stores the data.
      */
     @Override
-    public void setUp(IslandsMap islandsMap) {
+    public void ready(IslandsMap islandsMap) {
         List<BridgePoint> bridgePoints = islandsMap.getBridgeData();
         Point midBlock = islandsMap.getMiddle();
         this.midX = midBlock.getX();
@@ -61,10 +64,13 @@ public class RadiusGenerator extends BridgeGenerator {
                 max = max(dist, max);
                 min = min(dist, min);
             }
+
+            PodcrashSpigot.debugLog("Loaded bridge " + bridgePoint.getBridgeID() + " " + sectionMap.size() + " size");
         }
 
         this.maxRadius = (int) ceil(max) + 1;
         this.minRadius = (int) floor(min) - 1;
+        Bukkit.broadcastMessage(sectionMap.size() + " size");
     }
 
     /**
@@ -74,8 +80,13 @@ public class RadiusGenerator extends BridgeGenerator {
      */
     @Override
     public void generate(World world, int delay) {
-        final double[] currentRadius = {maxRadius};
+        doStuff(world, delay, this::placeSection);
+    }
 
+    private void doStuff(final World world, final int delay, final BiConsumer<World, BridgeSection> worldBridgeSectionBiConsumer) {
+        final double[] currentRadius = {maxRadius};
+        final int[] step = {0};
+        final Map<String, BridgeSection> cloneMap = new HashMap<>(sectionMap);
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -95,32 +106,51 @@ public class RadiusGenerator extends BridgeGenerator {
                 //2 is default (from noid's code)
                 final double borderFactor = 2;
 
+                PodcrashSpigot.debugLog("step: " + step[0]);
+                int blocksPlaced = 0;
                 final double currRadiusSquared = pow2(currentRadius[0]);
+                final double shortDistSquared = pow2(currentRadius[0] - borderFactor);
                 for (int x = startX; x <= endX; x++) {
                     //save up some extra calculations here
                     double xSquared = pow2(x - midX);
-                    double shortXQuared = pow2((x - midX) - borderFactor);
                     for (int z = startZ; z <= endZ; z++) {
                         double distSquared = xSquared + pow2(z - midZ);
-                        double shortDistSquared = shortXQuared + pow2( (z - midZ) - borderFactor);
+
+
+                        boolean inequality = shortDistSquared <= distSquared && distSquared <= currRadiusSquared;
+                        PodcrashSpigot.debugLog(String.format("%f < %f < %f %b", shortDistSquared, distSquared, currRadiusSquared, inequality));
                         // if it's larger, then don't go past
                         // if it's shorter, then don't go past
-                        if (distSquared > currRadiusSquared ||
-                            distSquared < shortDistSquared)
+                        //inequality: shortDistSquared <= distSquared <= currRadiusSquared
+                        //contra: distSquared > currDistSquared
+                        // and shortDistSquared > distSquared
+                        if (!inequality)
                             continue;
                         String possKey = x + ":" + z;
-                        BridgeSection section = sectionMap.get(possKey);
+                        BridgeSection section = cloneMap.get(possKey);
                         if (section == null)
                             continue;
-                        placeSection(world, section);
-                        sectionMap.remove(possKey);
+                        worldBridgeSectionBiConsumer.accept(world, section);
+                        blocksPlaced++;
+                        cloneMap.remove(possKey);
                     }
                 }
-                PodcrashSpigot.debugLog("Placed at " + currentRadius[0]);
+                PodcrashSpigot.debugLog("Placed " + blocksPlaced + " blocks");
                 //decrease the radius little by little
                 currentRadius[0]--;
+                step[0]++;
             }
         };
         runnable.runTaskTimer(PodcrashSpigot.getInstance(), 0, delay);
+    }
+
+    /**
+     * Copy and pasting :^)
+     * @param world
+     * @param delay
+     */
+    @Override
+    public void destroy(World world, int delay) {
+        doStuff(world, delay, this::removeSection);
     }
 }

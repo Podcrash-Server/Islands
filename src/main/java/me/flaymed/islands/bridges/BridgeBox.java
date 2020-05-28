@@ -12,4 +12,14 @@ public final class BridgeBox extends BoundingBox {
     public BridgeBox(Vector min, Vector max) {
         super(min, max);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

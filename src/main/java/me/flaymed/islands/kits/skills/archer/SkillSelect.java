@@ -4,12 +4,14 @@ import com.podcrash.api.events.game.GameStartEvent;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.kits.iskilltypes.action.IConstruct;
 import com.podcrash.api.kits.skilltypes.Passive;
+import me.flaymed.islands.kits.classes.Archer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,6 +25,7 @@ public class SkillSelect extends Passive implements IConstruct {
     private ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
     private ItemStack quickShot = new ItemStack(Material.LEASH, 1);
     ItemStack healingShot = new ItemStack(Material.LEASH, 1);
+    private boolean skillEquipped = false;
 
     public SkillSelect() {
 
@@ -33,19 +36,13 @@ public class SkillSelect extends Passive implements IConstruct {
         return "Skill Select";
     }
 
-    private void openSkillGui(Player player) {
-
-        player.openInventory(inv);
-
-    }
-
     @EventHandler
     public void gameStart(GameStartEvent e) {
         List<Player> players = e.getPlayers();
 
         for (Player player: players) {
             if (player == getPlayer()) {
-                openSkillGui(player);
+                player.openInventory(inv);
             }
         }
 
@@ -55,23 +52,44 @@ public class SkillSelect extends Passive implements IConstruct {
     public void playerClickInventory(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
 
+        String skillName = null;
+        String skillMessage = String.format("%sSkill> %sYou equipped skill %s%s%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.GREEN, skillName, ChatColor.GRAY);
         if (e.getInventory() == inv) {
             if (e.getCurrentItem().equals(ropedArrow)) {
-                player.sendMessage("You equipped roped arrow!");
+                skillEquipped = true;
+                Archer archer = new Archer(player, Barrage.class, RopedArrow.class);
+                KitPlayerManager.getInstance().addKitPlayer(archer);
+                skillName = "Roped Arrow";
                 player.closeInventory();
             }
 
             if (e.getCurrentItem().equals(quickShot)) {
-                player.sendMessage("You equipped quick shot!");
+                skillEquipped = true;
+                Archer archer = new Archer(player, Barrage.class, QuickShot.class);
+                KitPlayerManager.getInstance().addKitPlayer(archer);
+                skillName = "Quick Shot";
                 player.closeInventory();
             }
 
             if (e.getCurrentItem().equals(healingShot)) {
-                player.sendMessage("You equipped healing shot!");
+                skillEquipped = true;
+                Archer archer = new Archer(player, Barrage.class, HealingShot.class);
+                KitPlayerManager.getInstance().addKitPlayer(archer);
+                skillName = "Healing Shot";
                 player.closeInventory();
             }
+
+            if (skillEquipped)
+                player.sendMessage();
         }
 
+    }
+
+    @EventHandler
+    public void inventoryClose(InventoryCloseEvent e) {
+        if (e.getPlayer() == getPlayer())
+            if (!skillEquipped && e.getInventory() == inv)
+                getPlayer().openInventory(inv);
     }
 
 

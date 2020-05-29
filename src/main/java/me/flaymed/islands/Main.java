@@ -3,6 +3,7 @@ package me.flaymed.islands;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.podcrash.api.game.GameManager;
 import com.podcrash.api.plugin.PodcrashSpigot;
+import me.flaymed.islands.command.OreSettingCommand;
 import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.listeners.IslandsGameListener;
@@ -17,6 +18,8 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
+        PodcrashSpigot spigot =  (PodcrashSpigot) Bukkit.getPluginManager().getPlugin("PodcrashAPI");
+        spigot.registerCommand(new OreSettingCommand());
         IslandsGame game = new IslandsGame(GameManager.getCurrentID(), Long.toString(System.currentTimeMillis()));
         GameManager.createGame(game);
 

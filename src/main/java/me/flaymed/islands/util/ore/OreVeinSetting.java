@@ -3,11 +3,12 @@ package me.flaymed.islands.util.ore;
 import org.bukkit.Material;
 
 public enum OreVeinSetting {
+    STONE(0, 1, 10, 0.5, Material.STONE),
     GRAVEL(2, 6, 10, 0.7, Material.GRAVEL),
-    COAL(8, 16, 10, 0.6, Material.COAL_ORE),
-    IRON(4, 10, 10, 0.5, Material.IRON_ORE),
-    GOLD(4, 10, 10, 0.5, Material.GOLD_ORE),
-    DIAMOND(3, 7, 10, 0.3, Material.DIAMOND_ORE);
+    COAL(8, 16, 10, 0.8, Material.COAL_ORE),
+    IRON(4, 10, 10, 0.875, Material.IRON_ORE),
+    GOLD(4, 10, 10, 0.95, Material.GOLD_ORE),
+    DIAMOND(3, 7, 10, 1, Material.DIAMOND_ORE);
 
     int min, max, tries;
     Material ore;

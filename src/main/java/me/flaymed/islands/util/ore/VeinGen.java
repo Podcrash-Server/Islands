@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -21,7 +22,6 @@ public class VeinGen {
     private final double continueChance;
     private final int tries, min, max;
     private final Vector[] possDir;
-    private final Object minerLock;
 
     private Location cursor;
     private boolean cursorSet;
@@ -44,12 +44,13 @@ public class VeinGen {
         return new VeinGen(builder);
     }
     private VeinGen(VeinBuilder builder) {
-        this.minerLock = new Object();
         this.continueChance = builder.continueChance;
         this.possDir = builder.allowedDirections.toArray(new Vector[0]);
         this.tries = builder.tries;
         this.min = builder.min;
         this.max = builder.max;
+        if (builder.ore == Material.STONE)
+            throw new IllegalStateException("VeinGens must not use the ore of STONE");
         this.ore = new MaterialData(builder.ore);
         this.cursorSet = false;
         this.oreGenerated = 0;
@@ -70,12 +71,15 @@ public class VeinGen {
         if (!this.cursorSet)
             throw new IllegalStateException("Please set a start location using startLocation!");
         //place the block initially
-        //BlockUtil.setBlock(cursor, ore.getItemType());
+        BlockUtil.setBlock(cursor, ore.getItemType());
 
         //find a randomized amount between the max and min to give ores.
         int maxOreGenerated = min + random.nextInt(max - min + 1);
-        while(getOreGenerated() < maxOreGenerated) {
-            if (!generateVein())
+        while (getOreGenerated() < maxOreGenerated) {
+            PodcrashSpigot.debugLog("ore generated is still less than the max ore generated: " + getOreGenerated() + " < " + maxOreGenerated);
+            boolean generatedVein = generateVein();
+            PodcrashSpigot.debugLog("Can generated a vein?: " + generatedVein);
+            if (!generatedVein)
                 break;
         }
     }
@@ -85,30 +89,29 @@ public class VeinGen {
      * @return true if there is a place to generate the vein. False if there is no place to generate a vein
      */
     public boolean generateVein() {
-        synchronized (minerLock) {
-            if (!this.stillValid) return false;
-            Location currentCursor = cursor.clone();
-            //find a random direction.
-            Vector randomDir = findRandomVector();
-            Location newLoc = currentCursor.add(randomDir);
+        if (!this.stillValid) return false;
+        Location currentCursor = cursor.clone();
+        //find a random direction.
+        Vector randomDir = findRandomVector();
 
-            //todo: use material data instead
-            Block block = newLoc.getBlock();
-            Material type = block.getType();
-            if (type == ore.getItemType())
-                return true;
-            if (type != Material.STONE) {//if the chosen block is ore itself or not stone, cancel
-                lastAir++;
-                return lastAir < 5;
-            }
+        //todo: use material data instead
+        int blockX = currentCursor.getBlockX() + randomDir.getBlockX();
+        int blockY = currentCursor.getBlockY() + randomDir.getBlockY();
+        int blockZ = currentCursor.getBlockZ() + randomDir.getBlockZ();
+        Block block = currentCursor.getWorld().getBlockAt(blockX, blockY, blockZ);
 
-            BlockUtil.setBlock(newLoc, ore.getItemType());
-            oreGenerated++;
-
-            this.cursor = currentCursor;
-            lastAir = 0;
-            return true;
+        Material type = block.getType();
+        if (type != Material.STONE) {//if the chosen block is ore itself or not stone, cancel
+            lastAir++;
+            return lastAir < 5;
         }
+
+        BlockUtil.setBlock(new Location(currentCursor.getWorld(), blockX, blockY, blockZ), ore.getItemType());
+        oreGenerated++;
+
+        this.cursor = currentCursor;
+        lastAir = 0;
+        return true;
     }
 
     /**

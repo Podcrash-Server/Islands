@@ -27,10 +27,11 @@ public class IslandsGameListener extends ListenerBase {
     @EventHandler
     public void start(GameStartEvent e) {
         IslandsGame game = (IslandsGame) e.getGame();
+        game.generateOres();
         game.setStage(GameStage.PREPARE);
 
         //destroy bridges:
-        game.destroyBridge(10);
+        game.destroyBridge(5);
     }
     @EventHandler
     public void stageChange(GameStageEvent e) {

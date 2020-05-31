@@ -1,4 +1,4 @@
-package me.flaymed.islands.commands;
+package me.flaymed.islands.command;
 
 import com.podcrash.api.game.Game;
 import com.podcrash.api.game.GameManager;

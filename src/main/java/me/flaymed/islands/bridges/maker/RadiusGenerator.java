@@ -85,7 +85,6 @@ public class RadiusGenerator extends BridgeGenerator {
 
     private void doStuff(final World world, final int delay, final BiConsumer<World, BridgeSection> worldBridgeSectionBiConsumer) {
         final double[] currentRadius = {maxRadius};
-        final int[] step = {0};
         final Map<String, BridgeSection> cloneMap = new HashMap<>(sectionMap);
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
@@ -106,7 +105,6 @@ public class RadiusGenerator extends BridgeGenerator {
                 //2 is default (from noid's code)
                 final double borderFactor = 2;
 
-                PodcrashSpigot.debugLog("step: " + step[0]);
                 int blocksPlaced = 0;
                 final double currRadiusSquared = pow2(currentRadius[0]);
                 final double shortDistSquared = pow2(currentRadius[0] - borderFactor);
@@ -118,7 +116,6 @@ public class RadiusGenerator extends BridgeGenerator {
 
 
                         boolean inequality = shortDistSquared <= distSquared && distSquared <= currRadiusSquared;
-                        PodcrashSpigot.debugLog(String.format("%f < %f < %f %b", shortDistSquared, distSquared, currRadiusSquared, inequality));
                         // if it's larger, then don't go past
                         // if it's shorter, then don't go past
                         //inequality: shortDistSquared <= distSquared <= currRadiusSquared
@@ -138,10 +135,9 @@ public class RadiusGenerator extends BridgeGenerator {
                 PodcrashSpigot.debugLog("Placed " + blocksPlaced + " blocks");
                 //decrease the radius little by little
                 currentRadius[0]--;
-                step[0]++;
             }
         };
-        runnable.runTaskTimer(PodcrashSpigot.getInstance(), 0, delay);
+        runnable.runTaskTimerAsynchronously(PodcrashSpigot.getInstance(), 0, delay);
     }
 
     /**

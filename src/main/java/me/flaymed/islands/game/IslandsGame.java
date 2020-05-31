@@ -6,16 +6,21 @@ import com.podcrash.api.db.pojos.map.Point;
 import com.podcrash.api.game.*;
 import com.podcrash.api.game.objects.ItemObjective;
 import com.podcrash.api.game.objects.WinObjective;
+import com.podcrash.api.listeners.DeathHandler;
+import com.podcrash.api.plugin.PodcrashSpigot;
+import com.podcrash.api.time.TimeHandler;
+import com.podcrash.api.world.BlockUtil;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.maker.BridgeGenerator;
 import me.flaymed.islands.events.GameStageEvent;
 import me.flaymed.islands.game.scoreboard.IslandsScoreboard;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import me.flaymed.islands.util.ore.OreVeinSetting;
+import me.flaymed.islands.util.ore.VeinBuilder;
+import me.flaymed.islands.util.ore.VeinGen;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -31,6 +36,7 @@ public class IslandsGame extends Game {
     public IslandsGame(int id, String name) {
         super(id, name, GameType.DOM);
         this.board = new IslandsScoreboard(id);
+        DeathHandler.setAllowPlayerDrops(true);
     }
 
     @Override
@@ -107,12 +113,54 @@ public class IslandsGame extends Game {
         final Set<Material> ores = new HashSet<>(Arrays.asList(Material.DIAMOND_ORE, Material.REDSTONE_ORE, Material.EMERALD_ORE, Material.GOLD_ORE));
         for (Point point : orePoints) {
             Block block = getGameWorld().getBlockAt((int) point.getX(), (int) point.getY(), (int) point.getZ());
+            Chunk chunk = getGameWorld().getChunkAt(block);
+            //make this part better
+            if (!chunk.isLoaded()) chunk.load();
             Material possOre = block.getType();
             if (!ores.contains(possOre))
                 continue;
             blockConsumer.accept(block);
         }
     }
+
+    public void generateOres() {
+        IslandsMap map = (IslandsMap) getMap();
+        //will use the sam random seed to make sure the ores are roughly the same per island
+        final Random random = new Random();
+        Consumer<Block> genBlockOre = block -> {
+            //get a random ore
+            double guess = random.nextDouble();
+
+            OreVeinSetting rng = null;
+            for (OreVeinSetting setting : OreVeinSetting.details()) {
+                double chance = setting.getContinueChance();
+                if (guess < chance) {
+                    rng = setting;
+                    break;
+                }
+            }
+            if (rng == null)
+                throw new IllegalStateException("the rng ore must not be null! Chance configuration must have went wrong.");
+            if (rng == OreVeinSetting.STONE) {
+                BlockUtil.setBlock(block.getLocation(), Material.STONE);
+                return;
+            }
+            VeinGen generator = VeinGen.fromOreSetting(rng);
+            generator.startLocation(block.getLocation());
+            generator.generate();
+        };
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                consumeOre(map.getRedOres(), genBlockOre);
+                consumeOre(map.getBlueOres(), genBlockOre);
+                consumeOre(map.getGreenOres(), genBlockOre);
+                consumeOre(map.getYellowOres(), genBlockOre);
+            }
+        };
+        runnable.runTask(PodcrashSpigot.getInstance());
+    }
+
 
     public String getBridgeType() {
         return bridgeType;
@@ -152,14 +200,14 @@ public class IslandsGame extends Game {
     }
 
     public void fallBridge(int delay) {
-        Bukkit.broadcastMessage("fall the bridges!");
+        //Bukkit.broadcastMessage("fall the bridges!");
         World world;
         if ((world = getGameWorld()) == null)
             return;
         bridgeGenerator.generate(world, delay);
     }
     public void destroyBridge(int delay) {
-        Bukkit.broadcastMessage("destroy the bridges!");
+        //Bukkit.broadcastMessage("destroy the bridges!");
         World world;
         if ((world = getGameWorld()) == null)
             return;

@@ -4,7 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.podcrash.api.game.GameManager;
 import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.command.OreSettingCommand;
-import me.flaymed.islands.commands.DropBridgeCommand;
+import me.flaymed.islands.command.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.listeners.IslandsGameListener;
 import me.flaymed.islands.listeners.IslandsJoinListener;

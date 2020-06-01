@@ -7,6 +7,8 @@ import com.podcrash.api.listeners.ListenerBase;
 import me.flaymed.islands.events.GameStageEvent;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
+import me.flaymed.islands.game.resource.AnimalSpawnResource;
+import me.flaymed.islands.game.resource.ShroomSpawnResource;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +32,9 @@ public class IslandsGameListener extends ListenerBase {
         game.generateOres();
         game.setStage(GameStage.PREPARE);
 
+        game.registerResources(
+            new AnimalSpawnResource(game.getId()),
+            new ShroomSpawnResource(game.getId()));
         //destroy bridges:
         game.destroyBridge(5);
     }

@@ -23,8 +23,8 @@ public class SkillSelect extends Passive implements IConstruct {
 
     private final  Inventory inv = Bukkit.createInventory(null, 27, "Select a Skill to use");
     private final  ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
-    private final  ItemStack quickShot = new ItemStack(Material.LEASH, 1);
-    private final ItemStack healingShot = new ItemStack(Material.LEASH, 1);
+    private final  ItemStack quickShot = new ItemStack(Material.ARROW, 1);
+    private final ItemStack healingShot = new ItemStack(Material.SPECKLED_MELON, 1);
     private boolean skillEquipped = false;
 
     public SkillSelect() {

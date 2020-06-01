@@ -59,7 +59,7 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
 
     @Override
     public ItemType getItemType() {
-        return ItemType.TNT;
+        return null;
     }
 
     @Override

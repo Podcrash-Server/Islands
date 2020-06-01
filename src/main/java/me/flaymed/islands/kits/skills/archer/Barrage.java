@@ -30,6 +30,7 @@ public class Barrage extends Passive {
         float charge = e.getForce();
         Arrow arrow = (Arrow) e.getProjectile();
 
+        //TODO: use a normal vector
         if(charge <= 0.1F) return;
         int total = (int) (((charge * numArrows) + 0.5F)/2);
         Location location = arrow.getLocation();

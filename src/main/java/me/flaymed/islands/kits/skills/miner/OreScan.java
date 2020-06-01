@@ -3,6 +3,8 @@ package me.flaymed.islands.kits.skills.miner;
 import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.Instant;
+import com.podcrash.api.util.MathUtil;
+import net.jafama.FastMath;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -87,6 +89,8 @@ public class OreScan extends Instant implements ICooldown {
                     if (canceled) {
                         break;
                     }
+                    double distance = FastMath.pow2(playerX - x) + FastMath.pow2(playerY - y) + FastMath.pow2(playerZ - z);
+                    
                     Block block = player.getWorld().getBlockAt(x, y, z);
 
                     boolean searchConcluded = x + 1 >= higherX && y + 1 >= higherY && z + 1 >= higherZ;

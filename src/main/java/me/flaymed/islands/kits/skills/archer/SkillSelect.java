@@ -21,10 +21,10 @@ import java.util.List;
 
 public class SkillSelect extends Passive implements IConstruct {
 
-    private Inventory inv = Bukkit.createInventory(null, 27, "Select a Skill to use");
-    private ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
-    private ItemStack quickShot = new ItemStack(Material.LEASH, 1);
-    ItemStack healingShot = new ItemStack(Material.LEASH, 1);
+    private final  Inventory inv = Bukkit.createInventory(null, 27, "Select a Skill to use");
+    private final  ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
+    private final  ItemStack quickShot = new ItemStack(Material.LEASH, 1);
+    private final ItemStack healingShot = new ItemStack(Material.LEASH, 1);
     private boolean skillEquipped = false;
 
     public SkillSelect() {
@@ -38,6 +38,9 @@ public class SkillSelect extends Passive implements IConstruct {
 
     @EventHandler
     public void gameStart(GameStartEvent e) {
+        getPlayer().openInventory(inv);
+        //no need for below, you have a player instance (lol)
+        /*
         List<Player> players = e.getPlayers();
 
         for (Player player: players) {
@@ -45,7 +48,7 @@ public class SkillSelect extends Passive implements IConstruct {
                 player.openInventory(inv);
             }
         }
-
+         */
     }
 
     @EventHandler
@@ -53,7 +56,6 @@ public class SkillSelect extends Passive implements IConstruct {
         Player player = (Player) e.getWhoClicked();
 
         String skillName = null;
-        String skillMessage = String.format("%sSkill> %sYou equipped skill %s%s%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.GREEN, skillName, ChatColor.GRAY);
         if (e.getInventory() == inv) {
             if (e.getCurrentItem().equals(ropedArrow)) {
                 skillEquipped = true;
@@ -79,8 +81,9 @@ public class SkillSelect extends Passive implements IConstruct {
                 player.closeInventory();
             }
 
+            String skillMessage = String.format("%sSkill> %sYou equipped skill %s%s%s!", ChatColor.BLUE, ChatColor.GRAY, ChatColor.GREEN, skillName, ChatColor.GRAY);
             if (skillEquipped)
-                player.sendMessage();
+                player.sendMessage(skillMessage);
         }
 
     }

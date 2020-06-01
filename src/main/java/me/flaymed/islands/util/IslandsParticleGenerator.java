@@ -9,7 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class IslandsParticleGenerator {
+//final bc you're not supposed to init an object
+public final class IslandsParticleGenerator {
 
 
     /**

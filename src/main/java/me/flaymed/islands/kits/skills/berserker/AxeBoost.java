@@ -21,11 +21,9 @@ public class AxeBoost extends Passive {
         if (e.getCause() != Cause.MELEE && e.getCause() != Cause.MELEESKILL) return;
         e.setModified(true);
 
-        if (e.getAttacker() == getPlayer()) {
-            if (getPlayer().getItemInHand().getType().toString().toLowerCase().contains("axe")) {
-                e.setDamage(e.getDamage() + 1);
-            }
+        if (e.getAttacker() != getPlayer()) return;
+        if (getPlayer().getItemInHand().getType().toString().toLowerCase().contains("axe")) {
+            e.setDamage(e.getDamage() + 1);
         }
-
     }
 }

@@ -5,6 +5,7 @@ import com.podcrash.api.kits.enums.ItemType;
 import com.podcrash.api.kits.iskilltypes.action.ICooldown;
 import com.podcrash.api.kits.skilltypes.BowShotSkill;
 import com.podcrash.api.kits.skilltypes.Instant;
+import com.podcrash.api.listeners.GameDamagerConverterListener;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
@@ -13,7 +14,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.util.Vector;
 
-public class QuickShot extends BowShotSkill implements ICooldown {
+public class QuickShot extends Instant implements ICooldown {
+    //edit this.
+    private final float damage = 6;
     @Override
     public float getCooldown() {
         return 25;
@@ -21,32 +24,18 @@ public class QuickShot extends BowShotSkill implements ICooldown {
 
     @Override
     protected void doSkill(PlayerEvent event, Action action) {
-        if (!onCooldown()) {
-
-            if (rightClickCheck(action)) return;
-            Vector v = getPlayer().getLocation().getDirection().multiply(3);
-            getPlayer().launchProjectile(Arrow.class).setVelocity(v);
-            getPlayer().sendMessage(getUsedMessage());
-            setLastUsed(System.currentTimeMillis());
-
-        } else {
+        if (onCooldown()) {
             getPlayer().sendMessage(getCooldownMessage());
+            return;
         }
-    }
-
-    @Override
-    protected void shotArrow(Arrow arrow, float force) {
-
-    }
-
-    @Override
-    protected void shotEntity(DamageApplyEvent event, Player shooter, LivingEntity victim, Arrow arrow, float force) {
-
-    }
-
-    @Override
-    protected void shotGround(Player shooter, Location location, Arrow arrow, float force) {
-
+        if (rightClickCheck(action))
+            return;
+        Vector v = getPlayer().getLocation().getDirection().multiply(3);
+        Arrow arrow = getPlayer().launchProjectile(Arrow.class);
+        arrow.setVelocity(v);
+        GameDamagerConverterListener.forceAddArrow(arrow, damage);
+        getPlayer().sendMessage(getUsedMessage());
+        setLastUsed(System.currentTimeMillis());
     }
 
     @Override

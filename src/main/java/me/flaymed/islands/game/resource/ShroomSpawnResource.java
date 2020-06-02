@@ -30,7 +30,7 @@ public class ShroomSpawnResource extends GameResource {
             }
         }
         //for 30 seconds?
-        timedTask = new TimedTask(30L * 1000L) {
+        timedTask = new TimedTask(2L * 60L * 1000L) {
             @Override
             public void action() {
                 Random random = new Random();

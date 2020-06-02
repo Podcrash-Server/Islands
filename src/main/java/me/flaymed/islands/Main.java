@@ -6,9 +6,7 @@ import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.command.OreSettingCommand;
 import me.flaymed.islands.command.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
-import me.flaymed.islands.listeners.IslandsGameListener;
-import me.flaymed.islands.listeners.IslandsJoinListener;
-import me.flaymed.islands.listeners.KitApplyListener;
+import me.flaymed.islands.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +29,8 @@ public class Main extends JavaPlugin {
         new IslandsJoinListener(this);
         new KitApplyListener(this);
         new IslandsGameListener(this);
+        new IslandsPlayerRestrict(this);
+        new CompassTrackerListener(this);
     }
     @Override
     public void onDisable() {

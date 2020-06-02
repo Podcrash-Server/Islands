@@ -1,6 +1,7 @@
 package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
+import com.podcrash.api.damage.DamageSource;
 import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.db.pojos.map.Point;
 import com.podcrash.api.game.*;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class IslandsGame extends Game {
+    public static final DamageSource WATER_DAMAGE = () -> "Water Damage";
     private GameStage stage;
     private BridgeGenerator bridgeGenerator;
     private String bridgeType;

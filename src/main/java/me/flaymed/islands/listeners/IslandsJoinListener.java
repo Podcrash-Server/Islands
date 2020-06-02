@@ -50,6 +50,8 @@ public class IslandsJoinListener extends ListenerBase {
 
     @EventHandler
     public void interactTest(PlayerInteractEvent e) {
+        if (GameManager.getGame() != null && GameManager.getGame().getGameState() == GameState.STARTED)
+            return;
         Player player = e.getPlayer();
         ItemStack item = player.getItemInHand();
         Material ore = item.getType();

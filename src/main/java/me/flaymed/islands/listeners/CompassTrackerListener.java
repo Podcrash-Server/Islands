@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CompassTrackerListener extends ListenerBase {
@@ -23,7 +24,10 @@ public class CompassTrackerListener extends ListenerBase {
         int switchSlot = e.getNewSlot();
         Player player = e.getPlayer();
         Inventory inventory = player.getInventory();
-        if (inventory.getItem(switchSlot).getType() != Material.COMPASS)
+        ItemStack stack = inventory.getItem(switchSlot);
+        if (stack == null)
+            return;
+        if (stack.getType() != Material.COMPASS)
             return;
         TimeHandler.repeatedTimeAsync(10, 0, new TimeResource() {
             @Override

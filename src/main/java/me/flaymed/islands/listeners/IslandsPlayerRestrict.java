@@ -66,6 +66,8 @@ public class IslandsPlayerRestrict extends ListenerBase {
             locs = new HashSet<>();
             first4Communism.put(key, locs);
         }
+        if (locs.size() >= 4)
+            return;
         locs.add(e.getBlockPlaced().getLocation().toVector());
     }
 

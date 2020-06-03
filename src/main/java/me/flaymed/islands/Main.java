@@ -31,6 +31,7 @@ public class Main extends JavaPlugin {
         new IslandsGameListener(this);
         new IslandsPlayerRestrict(this);
         new CompassTrackerListener(this);
+        new SoupListener(this);
     }
     @Override
     public void onDisable() {

@@ -15,6 +15,7 @@ import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.game.resource.AnimalSpawnResource;
 import me.flaymed.islands.game.resource.ShroomSpawnResource;
 import me.flaymed.islands.game.resource.WaterDamagerResource;
+import me.flaymed.islands.game.scoreboard.IslandsScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,7 +52,7 @@ public class IslandsGameListener extends ListenerBase {
         IslandsGame game = (IslandsGame) e.getGame();
         game.generateOres();
         game.setStage(GameStage.PREPARE);
-
+        game.setScoreboardInput(new IslandsScoreboard(game, game.getGameScoreboard()));
         game.registerResources(
             new AnimalSpawnResource(game.getId()),
             new ShroomSpawnResource(game.getId()),

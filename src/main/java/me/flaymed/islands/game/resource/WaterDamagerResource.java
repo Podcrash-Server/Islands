@@ -33,7 +33,7 @@ public class WaterDamagerResource extends GameResource {
     public WaterDamagerResource(int gameID) {
         super(gameID);
 
-        this.waterTask = new TimedTask(100) {
+        this.waterTask = new TimedTask(1000) {
             @Override
             public void action() {
                 game.consumeBukkitPlayer(WaterDamagerResource.this::waterDmg);

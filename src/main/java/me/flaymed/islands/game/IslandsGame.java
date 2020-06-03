@@ -37,7 +37,6 @@ public class IslandsGame extends Game {
 
     public IslandsGame(int id, String name) {
         super(id, name, GameType.DOM);
-        this.board = new IslandsScoreboard(id);
         DeathHandler.setAllowPlayerDrops(true);
     }
 

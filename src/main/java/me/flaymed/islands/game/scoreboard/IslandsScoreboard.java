@@ -1,11 +1,16 @@
 package me.flaymed.islands.game.scoreboard;
 
+import com.podcrash.api.game.Game;
 import com.podcrash.api.game.GameType;
 import com.podcrash.api.game.scoreboard.GameScoreboard;
+import com.podcrash.api.scoreboard.CustomScoreboard;
+import com.podcrash.api.scoreboard.ScoreboardInput;
 
-public class IslandsScoreboard extends GameScoreboard {
-    public IslandsScoreboard(int gameId) {
-        super(8, gameId, GameType.DOM);
+public class IslandsScoreboard extends ScoreboardInput {
+    private final Game game;
+    public IslandsScoreboard(Game game, CustomScoreboard scoreboard) {
+        super(scoreboard);
+        this.game = game;
     }
 
     @Override
@@ -14,7 +19,7 @@ public class IslandsScoreboard extends GameScoreboard {
     }
 
     @Override
-    public void startScoreboardTimer() {
-
+    public boolean cancel() {
+        return false;
     }
 }

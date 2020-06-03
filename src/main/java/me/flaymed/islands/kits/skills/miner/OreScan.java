@@ -87,6 +87,9 @@ public class OreScan extends Instant implements ICooldown {
                     if (canceled) {
                         break;
                     }
+                    //we may need this so that we find the actual closest block to the player instead of finding the first block we find.
+                    //double distance = FastMath.pow2(playerX - x) + FastMath.pow2(playerY - y) + FastMath.pow2(playerZ - z);
+
                     Block block = player.getWorld().getBlockAt(x, y, z);
 
                     boolean searchConcluded = x + 1 >= higherX && y + 1 >= higherY && z + 1 >= higherZ;

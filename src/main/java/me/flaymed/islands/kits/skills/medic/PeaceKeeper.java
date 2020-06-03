@@ -9,16 +9,22 @@ import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PeaceKeeper extends Passive implements IConstruct {
-
-    private Material chestplate = Material.DIAMOND_CHESTPLATE;
-    private Material leggings = Material.DIAMOND_LEGGINGS;
-    private Material sword = Material.DIAMOND_SWORD;
+    //add more if needed.
+    private final Set<Material> DIAMOND_MATERIALS = new HashSet<>(
+        Arrays.asList(Material.DIAMOND_AXE, Material.DIAMOND_SWORD,
+                Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET, Material.DIAMOND_BOOTS));
     private String kit = "Medic";
+    private String noUseMessage = String.format("%s Skill> %sYou cannot use this item as a %s!", ChatColor.BLUE, ChatColor.GRAY, kit);
 
     public PeaceKeeper() {
 
@@ -38,15 +44,11 @@ public class PeaceKeeper extends Passive implements IConstruct {
     public void clickItem(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
 
-        if (player == getPlayer()) {
-
-            if (e.getCurrentItem().getType().equals(chestplate) || e.getCurrentItem().getType().equals(leggings) || e.getCurrentItem().getType().equals(sword)) {
-                e.setCancelled(true);
-                player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, e.getCurrentItem().getType(), kit));
-            }
-
-        }
-
+        if (player != getPlayer())
+            return;
+        if (!DIAMOND_MATERIALS.contains(e.getCurrentItem().getType())) return;
+        e.setCancelled(true);
+        player.sendMessage(noUseMessage);
     }
 
     @EventHandler
@@ -54,13 +56,25 @@ public class PeaceKeeper extends Passive implements IConstruct {
         Player player = e.getPlayer();
         Item item = e.getItem();
 
-        if (player == getPlayer()) {
-            if (item.getType().equals(chestplate) || item.getType().equals(leggings) || item.getType().equals(sword)) {
-                e.setCancelled(true);
-                player.sendMessage(String.format("%s Skill> %sYou cannot use %s as a %s!", ChatColor.BLUE, ChatColor.GRAY, item.getType(), kit));
-            }
-        }
-
+        if (player != getPlayer())
+            return;
+        if (!DIAMOND_MATERIALS.contains(item.getType()))
+            return;
+        e.setCancelled(true);
+        player.sendMessage(noUseMessage);
     }
 
+    @EventHandler
+    public void playerClick(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        Action action = e.getAction();
+        Material holding = player.getItemInHand().getType();
+        if (player != getPlayer()) return;
+        if (!action.equals(Action.RIGHT_CLICK_AIR) && !action.equals(Action.RIGHT_CLICK_BLOCK)) return;
+        if (!DIAMOND_MATERIALS.contains(holding)) return;
+
+        e.setCancelled(true);
+        player.sendMessage(noUseMessage);
+        player.updateInventory();
+    }
 }

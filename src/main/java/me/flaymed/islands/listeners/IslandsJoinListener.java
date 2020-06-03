@@ -10,6 +10,10 @@ import me.flaymed.islands.kits.classes.Medic;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinBuilder;
 import me.flaymed.islands.util.ore.VeinGen;
+import me.flaymed.islands.kits.classes.Archer;
+import me.flaymed.islands.kits.classes.Berserker;
+import me.flaymed.islands.kits.classes.Bomber;
+import me.flaymed.islands.kits.classes.Medic;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,8 +34,8 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Medic medic = new Medic(player);
-        KitPlayerManager.getInstance().addKitPlayer(medic);
+        Archer archer = new Archer(player);
+        KitPlayerManager.getInstance().addKitPlayer(archer);
 
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {

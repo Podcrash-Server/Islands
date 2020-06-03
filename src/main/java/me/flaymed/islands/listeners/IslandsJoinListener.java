@@ -2,6 +2,7 @@ package me.flaymed.islands.listeners;
 
 import com.podcrash.api.game.GameManager;
 import com.podcrash.api.game.GameState;
+import com.podcrash.api.kits.KitPlayer;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
 import com.podcrash.api.plugin.PodcrashSpigot;
@@ -34,7 +35,7 @@ public class IslandsJoinListener extends ListenerBase {
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
 
-        Archer archer = new Archer(player);
+        KitPlayer archer = new Bomber(player);
         KitPlayerManager.getInstance().addKitPlayer(archer);
 
         if(GameManager.getGame() != null) {

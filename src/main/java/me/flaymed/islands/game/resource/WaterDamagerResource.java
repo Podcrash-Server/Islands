@@ -82,6 +82,7 @@ public class WaterDamagerResource extends GameResource {
     }
 
     private void fakeDie(Player p) {
+        DamageQueue.artificialDie(p);
         DropDeathLootEvent e = new DropDeathLootEvent(p);
         PodcrashSpigot.debugLog("Dropping items...");
         Bukkit.getPluginManager().callEvent(e);
@@ -97,7 +98,6 @@ public class WaterDamagerResource extends GameResource {
             if (stack == null || stack.getType() == Material.AIR) continue;
             world.dropItemNaturally(location, stack);
         }
-        DamageQueue.artificialDie(p);
     }
 
     @Override

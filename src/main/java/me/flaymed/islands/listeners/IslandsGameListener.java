@@ -15,8 +15,8 @@ import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.game.resource.AnimalSpawnResource;
 import me.flaymed.islands.game.resource.ShroomSpawnResource;
 import me.flaymed.islands.game.resource.WaterDamagerResource;
-import me.flaymed.islands.game.scoreboard.IslandsScoreboard;
-import org.bukkit.Bukkit;
+import me.flaymed.islands.game.scoreboard.GameTimerInput;
+import me.flaymed.islands.game.scoreboard.PrepareInput;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -52,7 +52,11 @@ public class IslandsGameListener extends ListenerBase {
         IslandsGame game = (IslandsGame) e.getGame();
         game.generateOres();
         game.setStage(GameStage.PREPARE);
-        game.setScoreboardInput(new IslandsScoreboard(game, game.getGameScoreboard()));
+        final long endTime = System.currentTimeMillis() + 8L * 60L * 1000L;
+        PrepareInput prepareInput = new PrepareInput(game, game.getGameScoreboard());
+        prepareInput.setUp(endTime);
+        game.setScoreboardInput(prepareInput);
+
         game.registerResources(
             new AnimalSpawnResource(game.getId()),
             new ShroomSpawnResource(game.getId()),
@@ -67,6 +71,9 @@ public class IslandsGameListener extends ListenerBase {
                 break;
             case FALLEN:
                 ((IslandsGame) e.getGame()).fallBridge(10);
+                GameTimerInput input = new GameTimerInput(e.getGame(), e.getGame().getGameScoreboard());
+                input.setUp();
+                e.getGame().setScoreboardInput(input);
                 break;
         }
     }

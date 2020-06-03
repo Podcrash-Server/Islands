@@ -1,6 +1,7 @@
 package me.flaymed.islands.kits.skills.archer;
 
 import com.podcrash.api.events.game.GameStartEvent;
+import com.podcrash.api.events.skill.ApplyKitEvent;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.kits.iskilltypes.action.IConstruct;
 import com.podcrash.api.kits.skilltypes.Passive;
@@ -21,9 +22,9 @@ import java.util.List;
 
 public class SkillSelect extends Passive implements IConstruct {
 
-    private final  Inventory inv = Bukkit.createInventory(null, 27, "Select a Skill to use");
-    private final  ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
-    private final  ItemStack quickShot = new ItemStack(Material.ARROW, 1);
+    private final Inventory inv = Bukkit.createInventory(null, 27, "Select a Skill to use");
+    private final ItemStack ropedArrow = new ItemStack(Material.LEASH, 1);
+    private final ItemStack quickShot = new ItemStack(Material.ARROW, 1);
     private final ItemStack healingShot = new ItemStack(Material.SPECKLED_MELON, 1);
     private boolean skillEquipped = false;
 
@@ -37,7 +38,7 @@ public class SkillSelect extends Passive implements IConstruct {
     }
 
     @EventHandler
-    public void gameStart(GameStartEvent e) {
+    public void apply(GameStartEvent e) {
         getPlayer().openInventory(inv);
         //no need for below, you have a player instance (lol)
         /*

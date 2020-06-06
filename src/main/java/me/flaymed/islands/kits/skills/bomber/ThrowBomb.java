@@ -36,7 +36,7 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
 
     @Override
     public void start() {
-        if (getPlayer() != null) TimeHandler.repeatedTimeAsync(/*30L * 20L*/20L, 0L, this);
+        if (getPlayer() != null) TimeHandler.repeatedTimeAsync(30L * 20L, 0L, this);
     }
 
     @Override

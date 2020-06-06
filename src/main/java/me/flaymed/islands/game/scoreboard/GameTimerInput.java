@@ -34,7 +34,7 @@ public class GameTimerInput extends ScoreboardInput {
             lines.add(team.teamSize() + " Alive");
             lines.add("");
         }
-        lines.add(ChatColor.BOLD + "Bridges in:");
+        lines.add(ChatColor.BOLD + "Game Timer:");
         long currentTimeMillis = System.currentTimeMillis();
         long timeLeft = currentTimeMillis - startTime;
 

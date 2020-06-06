@@ -14,6 +14,7 @@ import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.game.resource.AnimalSpawnResource;
 import me.flaymed.islands.game.resource.ShroomSpawnResource;
+import me.flaymed.islands.game.resource.StageChangeResource;
 import me.flaymed.islands.game.resource.WaterDamagerResource;
 import me.flaymed.islands.game.scoreboard.GameTimerInput;
 import me.flaymed.islands.game.scoreboard.PrepareInput;
@@ -60,7 +61,8 @@ public class IslandsGameListener extends ListenerBase {
         game.registerResources(
             new AnimalSpawnResource(game.getId()),
             new ShroomSpawnResource(game.getId()),
-            new WaterDamagerResource(game.getId()));
+            new WaterDamagerResource(game.getId()),
+            new StageChangeResource(game.getId(), endTime));
         //destroy bridges:
         game.destroyBridge(5);
     }

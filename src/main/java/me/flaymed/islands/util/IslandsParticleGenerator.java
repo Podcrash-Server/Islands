@@ -2,9 +2,11 @@ package me.flaymed.islands.util;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
+import com.podcrash.api.effect.particle.ParticleGenerator;
 import com.podcrash.api.game.GTeam;
 import com.podcrash.api.game.GameManager;
 import com.podcrash.api.game.TeamEnum;
+import com.podcrash.api.util.PacketUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -19,15 +21,20 @@ public final class IslandsParticleGenerator {
     public static void particleOverPlayer(Player player) {
         GTeam team = GameManager.getGame().getTeam(player);
         TeamEnum teamEnum = team.getTeamEnum();
-        Location playerLoc = player.getLocation();
+        Location playerLoc = player.getEyeLocation();
 
-        Vector v = new Location(player.getWorld(), playerLoc.getBlockX(), playerLoc.getBlockY() + 2, playerLoc.getBlockZ()).getDirection();
+        Vector v = playerLoc.add(0, 2, 0).toVector();
 
+        float[] RGB = new float[] {
+                teamEnum.getRed()/255F - 1F,
+                teamEnum.getGreen()/255F,
+                teamEnum.getBlue()/255F
+        };
+        WrapperPlayServerWorldParticles particle = ParticleGenerator.createParticle(v,
+                EnumWrappers.Particle.REDSTONE, new int[]{}, 0,
+                RGB[0], RGB[1], RGB[2]);
 
-        WrapperPlayServerWorldParticles particle = com.podcrash.api.effect.particle.ParticleGenerator.createParticle(v,
-                EnumWrappers.Particle.REDSTONE,1,
-                teamEnum.getRed()/255, teamEnum.getGreen()/255, teamEnum.getBlue()/255);
-        particle.setParticleData(1);
+        particle.setParticleData(1F);
+        PacketUtil.asyncSend(particle, GameManager.getGame().getBukkitPlayers());
     }
-
 }

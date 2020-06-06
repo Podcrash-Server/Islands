@@ -13,6 +13,7 @@ import com.podcrash.api.world.BlockUtil;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.maker.BridgeGenerator;
 import me.flaymed.islands.events.GameStageEvent;
+import me.flaymed.islands.util.ChestGen;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
 import org.bukkit.*;
@@ -97,9 +98,9 @@ public class IslandsGame extends Game {
         List<Point> chestPoints = ((IslandsMap) this.getMap()).getChests();
         for (Point point : chestPoints) {
             Block block = getGameWorld().getBlockAt((int) point.getX(), (int) point.getY(), (int) point.getZ());
-            if (!(block instanceof Chest))
+            if (!(block.getState() instanceof Chest))
                 throw new IllegalStateException("the block found is not a chest! " + point);
-            blockConsumer.accept((Chest) block);
+            blockConsumer.accept((Chest) block.getState());
         }
     }
 
@@ -147,6 +148,8 @@ public class IslandsGame extends Game {
             generator.startLocation(block.getLocation());
             generator.generate();
         };
+
+        Consumer<Chest> chestConsumer = ChestGen::generateItem;
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -154,6 +157,7 @@ public class IslandsGame extends Game {
                 consumeOre(map.getBlueOres(), genBlockOre);
                 consumeOre(map.getGreenOres(), genBlockOre);
                 consumeOre(map.getYellowOres(), genBlockOre);
+                consumeChest(chestConsumer);
             }
         };
         runnable.runTask(PodcrashSpigot.getInstance());

@@ -1,6 +1,7 @@
 package me.flaymed.islands.game.resource;
 
 import com.podcrash.api.game.resources.TimeGameResource;
+import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
 
@@ -24,5 +25,10 @@ public class StageChangeResource extends TimeGameResource {
     @Override
     public void cleanup() {
         ((IslandsGame) game).setStage(GameStage.FALLEN);
+    }
+
+    @Override
+    public void init() {
+        runAsync(10, 0);
     }
 }

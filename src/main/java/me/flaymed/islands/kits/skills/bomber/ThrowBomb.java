@@ -147,6 +147,12 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
         DamageApplier.damage((LivingEntity) e.getEntity(), getPlayer(), dmg, this, false);
     }
 
+    @EventHandler
+    public void explode(EntityExplodeEvent e) {
+        if (!bomberMap.contains(e.getEntity().getEntityId())) return;
+        e.setYield(1.0F);
+    }
+
     private void removeItemFromHand(Player player) {
         ItemStack item = player.getItemInHand();
         int slot = player.getInventory().getHeldItemSlot();

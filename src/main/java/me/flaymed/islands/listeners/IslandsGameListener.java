@@ -83,8 +83,10 @@ public class IslandsGameListener extends ListenerBase {
     @EventHandler
     public void resurect(GameResurrectEvent e) {
         IslandsGame game = (IslandsGame) e.getGame();
-        if (game.getStage() != GameStage.PREPARE)
+        if (game.getStage() != GameStage.PREPARE) {
+            e.setCancelled(true);
             return;
+        }
         if (!died.add(e.getWho().getName())) {
             e.setCancelled(true);
             game.addSpectator(e.getWho());

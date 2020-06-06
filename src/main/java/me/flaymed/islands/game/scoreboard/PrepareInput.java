@@ -32,7 +32,7 @@ public class PrepareInput extends ScoreboardInput {
         lines.add("");
         for (GTeam team : game.getTeams()) {
             lines.add(fancyTeamHeader(team.getTeamEnum()));
-            lines.add(String.valueOf(team.teamSize()) + " Alive");
+            lines.add(team.teamSize() + " Alive");
             lines.add("");
         }
         lines.add(ChatColor.BOLD + "Bridges in:");

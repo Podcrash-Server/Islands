@@ -49,7 +49,7 @@ public class GameTimerInput extends ScoreboardInput {
     }
 
     private String formatTime(int minutes, int seconds) {
-        StringBuilder builder = new StringBuilder(minutes);
+        StringBuilder builder = new StringBuilder(Integer.toString(minutes));
         builder.append(":");
         if (seconds < 10L)
             builder.append(0);

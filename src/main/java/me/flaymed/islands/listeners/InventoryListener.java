@@ -6,7 +6,6 @@ import com.podcrash.api.kits.KitPlayer;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
 import com.podcrash.api.sound.SoundPlayer;
-import me.flaymed.islands.inventory.IslandsInventoryItem;
 import me.flaymed.islands.inventory.IslandsInventoryManager;
 import me.flaymed.islands.kits.classes.*;
 import org.bukkit.Bukkit;
@@ -22,6 +21,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 public class InventoryListener extends ListenerBase {
 
@@ -55,17 +56,20 @@ public class InventoryListener extends ListenerBase {
         if (inventory == null || action == null || GameManager.getGame().getGameState() != GameState.LOBBY) return;
         if (inventory != IslandsInventoryManager.getKitSelectInventory()) return;
 
-        if (item == IslandsInventoryItem.BERSERKER_AXE_SELECT.getItem())
+        Potion potion = new Potion(PotionType.INSTANT_HEAL, 2);
+        ItemStack potionItem = potion.toItemStack(1);
+
+        if (item.getType() == Material.STONE_AXE)
             equipKit(player, new Berserker(player), kpm);
-        if (item == IslandsInventoryItem.BRAWLER_SWORD_SELECT.getItem())
+        if (item.getType() == Material.IRON_SWORD)
             equipKit(player, new Brawler(player), kpm);
-        if (item == IslandsInventoryItem.ARCHER_BOW_SELECT.getItem())
+        if (item.getType() == Material.BOW)
             equipKit(player, new Archer(player), kpm);
-        if (item == IslandsInventoryItem.MEDIC_POTION_SELECT.getItem())
+        if (item.getType() == potionItem.getType())
             equipKit(player, new Medic(player), kpm);
-        if (item == IslandsInventoryItem.MINER_PICKAXE_SELECT.getItem())
+        if (item.getType() == Material.DIAMOND_PICKAXE)
             equipKit(player, new Miner(player), kpm);
-        if (item == IslandsInventoryItem.BOMBER_TNT_SELECT.getItem())
+        if (item.getType() == Material.TNT)
             equipKit(player, new Bomber(player), kpm);
 
     }

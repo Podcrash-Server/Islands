@@ -53,44 +53,44 @@ public class OreScan extends Instant implements ICooldown {
             return;
         }
         Material inHand = player.getItemInHand().getType();
-        int playerX = player.getLocation().getBlockX();
-        int playerY = player.getLocation().getBlockY();
-        int playerZ = player.getLocation().getBlockZ();
+        double playerX = player.getLocation().getX();
+        double playerY = player.getLocation().getY();
+        double playerZ = player.getLocation().getZ();
 
         int diagRadius = (int) (radius * 1.414);
         int vertRadius = (int) (radius * 1.732);
 
-        int bottomX = playerX - diagRadius;
-        int higherX = playerX + diagRadius;
+        double bottomX = playerX - diagRadius;
+        double  higherX = playerX + diagRadius;
 
-        int bottomY = playerY - vertRadius;
-        int higherY = playerY + vertRadius;
+        double  bottomY = playerY - vertRadius;
+        double higherY = playerY + vertRadius;
 
-        int bottomZ = playerZ - diagRadius;
-        int higherZ = playerZ + diagRadius;
+        double bottomZ = playerZ - diagRadius;
+        double higherZ = playerZ + diagRadius;
 
         double offset = 0.5;
 
         boolean canceled = false;
 
         setLastUsed(System.currentTimeMillis());
-        for (int x = bottomX; x <= higherX; x++) {
+        for (double  x = bottomX; x <= higherX; x++) {
             if (canceled) {
                 canceled = false;
                 break;
             }
-            for (int y = bottomY; y <= higherY; y++) {
+            for (double  y = bottomY; y <= higherY; y++) {
                 if (canceled) {
                     break;
                 }
-                for (int z = bottomZ; z <= higherZ; z++) {
+                for (double  z = bottomZ; z <= higherZ; z++) {
                     if (canceled) {
                         break;
                     }
                     //we may need this so that we find the actual closest block to the player instead of finding the first block we find.
                     //double distance = FastMath.pow2(playerX - x) + FastMath.pow2(playerY - y) + FastMath.pow2(playerZ - z);
 
-                    Block block = player.getWorld().getBlockAt(x, y, z);
+                    Block block = player.getWorld().getBlockAt((int) x, (int) y, (int) z);
 
                     boolean searchConcluded = x + 1 >= higherX && y + 1 >= higherY && z + 1 >= higherZ;
                     OreData data = findByPickaxe(inHand);

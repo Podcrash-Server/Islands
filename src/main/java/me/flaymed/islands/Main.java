@@ -26,6 +26,7 @@ public class Main extends JavaPlugin {
     }
 
     public void registerListeners() {
+        new InventoryListener(this);
         new IslandsJoinListener(this);
         new KitApplyListener(this);
         new IslandsGameListener(this);

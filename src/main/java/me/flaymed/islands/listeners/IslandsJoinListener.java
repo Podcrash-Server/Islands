@@ -34,10 +34,6 @@ public class IslandsJoinListener extends ListenerBase {
     @EventHandler
     public void join(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-
-        KitPlayer archer = new Bomber(player);
-        KitPlayerManager.getInstance().addKitPlayer(archer);
-
         if(GameManager.getGame() != null) {
             if (GameManager.getGame().getGameState() == GameState.STARTED || GameManager.getGame().isFull()) {
                 if(GameManager.getGame().isParticipating(player)) {

@@ -104,7 +104,7 @@ public class Leap extends Instant implements ICooldown, ICharge, IConstruct {
         player.setVelocity(v);
         getPlayer().setFallDistance(0);
         hitGround.run();
-        player.getWorld().playSound(player.getLocation(), Sound.ENDERDRAGON_WINGS, 8, 1);
+        player.getWorld().playSound(player.getLocation(), Sound.ENDERDRAGON_WINGS, 1, 1);
         charges--;
 
         player.sendMessage(getCurrentChargeMessage());

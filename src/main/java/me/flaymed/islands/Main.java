@@ -1,7 +1,9 @@
 package me.flaymed.islands;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.podcrash.api.annotations.GamePlugin;
 import com.podcrash.api.game.GameManager;
+import com.podcrash.api.plugin.IGamePlugin;
 import com.podcrash.api.plugin.PodcrashSpigot;
 import me.flaymed.islands.command.OreSettingCommand;
 import me.flaymed.islands.command.DropBridgeCommand;
@@ -10,7 +12,8 @@ import me.flaymed.islands.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin {
+@GamePlugin
+public class Main extends JavaPlugin implements IGamePlugin {
     private static Main INSTANCE;
     @Override
     public void onEnable() {
@@ -18,10 +21,7 @@ public class Main extends JavaPlugin {
 
         PodcrashSpigot spigot =  (PodcrashSpigot) Bukkit.getPluginManager().getPlugin("PodcrashAPI");
         spigot.registerCommand(new OreSettingCommand());
-        IslandsGame game = new IslandsGame(GameManager.getCurrentID(), Long.toString(System.currentTimeMillis()));
-        GameManager.createGame(game);
 
-        registerListeners();
         PodcrashSpigot.getInstance().registerCommand(new DropBridgeCommand());
     }
 
@@ -34,6 +34,7 @@ public class Main extends JavaPlugin {
         new CompassTrackerListener(this);
         new SoupListener(this);
     }
+
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelAllTasks();

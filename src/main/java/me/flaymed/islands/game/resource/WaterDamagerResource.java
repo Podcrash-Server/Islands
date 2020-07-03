@@ -1,9 +1,7 @@
 package me.flaymed.islands.game.resource;
 
 import com.packetwrapper.abstractpackets.WrapperPlayServerEntityStatus;
-import com.podcrash.api.damage.DamageApplier;
 import com.podcrash.api.damage.DamageQueue;
-import com.podcrash.api.events.DamageApplyEvent;
 import com.podcrash.api.events.DropDeathLootEvent;
 import com.podcrash.api.game.resources.GameResource;
 import com.podcrash.api.plugin.PodcrashSpigot;
@@ -76,7 +74,7 @@ public class WaterDamagerResource extends GameResource {
         PacketUtil.syncSend(packet, victim.getWorld().getPlayers());
 
         EntityLiving craftLiving = ((CraftLivingEntity) victim).getHandle();
-        String hurtSound = ReflectionUtil.runMethod(craftLiving, craftLiving.getClass().getName(),"bo", String.class);
+        String hurtSound = ReflectionUtil.runNMSMethod(craftLiving, craftLiving.getClass().getName(),"bo", String.class);
         SoundPlayer.sendSound(victim.getLocation(), hurtSound, 1, 75);
         return isDead;
     }

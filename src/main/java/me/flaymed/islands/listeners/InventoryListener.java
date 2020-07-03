@@ -6,7 +6,6 @@ import com.podcrash.api.kits.KitPlayer;
 import com.podcrash.api.kits.KitPlayerManager;
 import com.podcrash.api.listeners.ListenerBase;
 import com.podcrash.api.sound.SoundPlayer;
-import me.flaymed.islands.inventory.IslandsInventoryManager;
 import me.flaymed.islands.kits.classes.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -51,27 +50,31 @@ public class InventoryListener extends ListenerBase {
         Inventory inventory = e.getInventory();
         InventoryAction action = e.getAction();
         ItemStack item = e.getCurrentItem();
-        KitPlayerManager kpm = KitPlayerManager.getInstance();
+        if (item == null) return;
         if (GameManager.getGame() == null) return;
         if (inventory == null || action == null || GameManager.getGame().getGameState() != GameState.LOBBY) return;
-        if (inventory != IslandsInventoryManager.getKitSelectInventory()) return;
+        if (!inventory.getName().equalsIgnoreCase("Select a Kit")) return;
 
-        Potion potion = new Potion(PotionType.INSTANT_HEAL, 2);
-        ItemStack potionItem = potion.toItemStack(1);
-
-        if (item.getType() == Material.STONE_AXE)
-            equipKit(player, new Berserker(player), kpm);
-        if (item.getType() == Material.IRON_SWORD)
-            equipKit(player, new Brawler(player), kpm);
-        if (item.getType() == Material.BOW)
-            equipKit(player, new Archer(player), kpm);
-        if (item.getType() == potionItem.getType())
-            equipKit(player, new Medic(player), kpm);
-        if (item.getType() == Material.DIAMOND_PICKAXE)
-            equipKit(player, new Miner(player), kpm);
-        if (item.getType() == Material.TNT)
-            equipKit(player, new Bomber(player), kpm);
-
+        switch (item.getType()) {
+            case STONE_AXE:
+                equipKit(player, new Berserker(player));
+                break;
+            case IRON_SWORD:
+                equipKit(player, new Brawler(player));
+                break;
+            case BOW:
+                equipKit(player, new Archer(player));
+                break;
+            case POTION:
+                equipKit(player, new Medic(player));
+                break;
+            case DIAMOND_PICKAXE:
+                equipKit(player, new Miner(player));
+                break;
+            case TNT:
+                equipKit(player, new Bomber(player));
+                break;
+        }
     }
 
     @EventHandler
@@ -84,27 +87,36 @@ public class InventoryListener extends ListenerBase {
         if (GameManager.getGame() == null) return;
         if (GameManager.getGame().getGameState() != GameState.LOBBY) return;
         if (inventory == null) return;
-        if (inventory == IslandsInventoryManager.getKitSelectInventory() && kitPlayer == null)
+        if (inventory.getName().equalsIgnoreCase("Select a Kit") && kitPlayer == null)
             openKitGui(player);
     }
 
-    private void equipKit(Player player, KitPlayer kitPlayer, KitPlayerManager kpm) {
-        kpm.addKitPlayer(kitPlayer);
+    private void equipKit(Player player, KitPlayer kitPlayer) {
+        KitPlayerManager.getInstance().addKitPlayer(kitPlayer);
         SoundPlayer.sendSound(player, "note.pling", .9F, 50);
+        player.closeInventory();
     }
 
     private void openKitGui(Player player) {
-        player.openInventory(IslandsInventoryManager.getKitSelectInventory());
+        player.openInventory(kitSelectInventory);
     }
 
     private Inventory createKitSelectInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 6, "Select a kit");
+        Inventory inventory = Bukkit.createInventory(null, 54, "Select a kit");
         ItemStack berserkerAxe = new ItemStack(Material.STONE_AXE);
         ItemStack brawlerSword = new ItemStack(Material.IRON_SWORD);
         ItemStack archerBow = new ItemStack(Material.BOW);
         ItemStack medicPotion = new ItemStack(Material.POTION);
         ItemStack bomberTnt = new ItemStack(Material.TNT);
         ItemStack minerPickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
+
+        inventory.setItem(10, berserkerAxe);
+        inventory.setItem(12, brawlerSword);
+        inventory.setItem(14, archerBow);
+        inventory.setItem(16, medicPotion);
+        inventory.setItem(39, bomberTnt);
+        inventory.setItem(41, minerPickaxe);
+
         return inventory;
     }
 

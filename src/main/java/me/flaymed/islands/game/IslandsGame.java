@@ -1,6 +1,7 @@
 package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
+import com.podcrash.api.annotations.GameData;
 import com.podcrash.api.damage.DamageSource;
 import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.db.pojos.map.Point;
@@ -27,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 
+@GameData(name = "Islands")
 public class IslandsGame extends Game {
     public static final DamageSource WATER_DAMAGE = () -> "Water Damage";
     private GameStage stage;

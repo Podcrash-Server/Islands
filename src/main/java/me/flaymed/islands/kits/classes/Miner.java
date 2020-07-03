@@ -12,7 +12,6 @@ public class Miner extends IslandsPlayer {
         super(player, "Miner", OreScan.class, QuickMine.class);
         ItemStack air = new ItemStack(Material.AIR);
         setDefaultHotbar(new ItemStack[] {new ItemStack(Material.IRON_PICKAXE), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone()});
-
     }
 
 }

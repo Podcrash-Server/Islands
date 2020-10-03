@@ -1,16 +1,39 @@
 package me.flaymed.islands.kits.classes;
 
-import me.flaymed.islands.kits.IslandsPlayer;
-import me.flaymed.islands.kits.skills.brawler.Behemoth;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.Kit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import java.util.List;
 
-public class Brawler extends IslandsPlayer {
-    public Brawler(Player player) {
-        super(player, "Brawler", Behemoth.class);
-        ItemStack air = new ItemStack(Material.AIR);
-        setDefaultHotbar(new ItemStack[] {new ItemStack(Material.IRON_SWORD), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone()});
+public class Brawler extends Kit {
 
+    public Brawler(Class<? extends Ability>... abilities) {
+        super("Brawler", abilities);
+    }
+
+    @Override
+    public String getPermission() {
+        return "islands.brawler";
+    }
+
+    @Override
+    public List<String> getDescription() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return new ItemStack(Material.IRON_SWORD);
+    }
+
+    @Override
+    public ItemStack[] getArmor() {
+        return new ItemStack[0];
+    }
+
+    @Override
+    public ItemStack getWeapon() {
+        return new ItemStack(Material.IRON_SWORD);
     }
 }

@@ -1,27 +1,40 @@
 package me.flaymed.islands.kits.classes;
 
-import com.podcrash.api.kits.Skill;
-import me.flaymed.islands.kits.IslandsPlayer;
-import me.flaymed.islands.kits.skills.archer.Barrage;
-import me.flaymed.islands.kits.skills.archer.*;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.Kit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import java.util.List;
 
-public class Archer extends IslandsPlayer {
-    //I could argue removing the Barrage part?
-    //it will still work though with or without
-    //just one less thing to register
-    public Archer(Player player) {
-        super(player, "Archer", Barrage.class, SkillSelect.class);
+public class Archer extends Kit {
+
+    public Archer(Class<? extends Ability>... abilities) {
+        super("Archer", abilities);
     }
 
-    public void addSkill(Skill skill) {
-        this.skills.add(skill);
+    @Override
+    public String getPermission() {
+        return "islands.archer";
     }
-    public Archer(Player player, Class<? extends Skill>... skills) {
-        super(player, "Archer", skills);
-        ItemStack air = new ItemStack(Material.AIR);
-        setDefaultHotbar(new ItemStack[] {new ItemStack(Material.BOW), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone(), air.clone()});
+
+    //TODO: description
+    @Override
+    public List<String> getDescription() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return new ItemStack(Material.BOW);
+    }
+
+    @Override
+    public ItemStack[] getArmor() {
+        return new ItemStack[0];
+    }
+
+    @Override
+    public ItemStack getWeapon() {
+        return null;
     }
 }

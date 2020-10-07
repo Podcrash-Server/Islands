@@ -1,31 +1,22 @@
 package me.flaymed.islands.kits.skills.archer;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
-import com.podcrash.api.effect.particle.ParticleGenerator;
 import com.podcrash.api.effect.status.Status;
 import com.podcrash.api.effect.status.StatusApplier;
-import com.podcrash.api.game.GTeam;
-import com.podcrash.api.game.GameManager;
-import com.podcrash.api.game.TeamEnum;
-import com.podcrash.api.kits.enums.ItemType;
-import com.podcrash.api.kits.iskilltypes.action.ICooldown;
-import com.podcrash.api.kits.skilltypes.Instant;
-import com.podcrash.api.kits.skilltypes.Passive;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.abilitytype.Cooldown;
+import com.podcrash.gamecore.kits.abilitytype.Passive;
 import me.flaymed.islands.util.IslandsParticleGenerator;
 import net.jafama.FastMath;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
-
+import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
-public class HealingShot extends Passive implements ICooldown {
+public class HealingShot extends Ability implements Passive, Cooldown {
     @Override
     public float getCooldown() {
         return 25;
@@ -36,31 +27,28 @@ public class HealingShot extends Passive implements ICooldown {
         return "Healing Shot";
     }
 
+    @Override
+    public ItemStack getItem() {
+        return new ItemStack(Material.BOW);
+    }
+
     @EventHandler
     public void playerInteract(PlayerInteractEvent e) {
-        if (e.getPlayer() != getPlayer())
-            return;
-        if (e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK)
-          return;
-        if (onCooldown()) {
-            getPlayer().sendMessage(getCooldownMessage());
-            return;
-        }
-        this.setLastUsed(System.currentTimeMillis());
-        List<LivingEntity> entities = getPlayer().getWorld().getLivingEntities();
-        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.REGENERATION, 5, 1, true);
-        getPlayer().sendMessage(getUsedMessage());
-        for (LivingEntity entity : entities) {
-            if (!(entity instanceof Player))
-                continue;
-            Player player1 = (Player) entity;
-            Player player2 = getPlayer();
-            //the blockX returns a floored version of the regular double coordinates
-            //imo I would use the doubles to get a more accurate calculation
-            if (distance(player1.getLocation().getX(), player1.getLocation().getZ(), player2.getLocation().getX(), player2.getLocation().getZ()) > 5.0)
-                continue;
 
-            if (!isAlly(player1)) continue;
+        Player player = e.getPlayer();
+
+        if (e.getPlayer() != player) return;
+        if (e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        List<LivingEntity> entities = player.getWorld().getLivingEntities();
+        StatusApplier.getOrNew(player).applyStatus(Status.REGENERATION, 5, 1, true);
+        player.sendMessage(getUsedMessage());
+        for (LivingEntity entity : entities) {
+            if (!(entity instanceof Player)) continue;
+            Player player1 = (Player) entity;
+            Player player2 = player;
+            if (distance(player1.getLocation().getX(), player1.getLocation().getZ(), player2.getLocation().getX(), player2.getLocation().getZ()) > 5.0) continue;
+            //TODO: ally stuff
+            //if (!isAlly(player1)) continue;
             StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
             IslandsParticleGenerator.particleOverPlayer(player1);
         }

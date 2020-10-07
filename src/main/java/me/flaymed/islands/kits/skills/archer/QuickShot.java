@@ -1,41 +1,25 @@
 package me.flaymed.islands.kits.skills.archer;
 
-import com.podcrash.api.events.DamageApplyEvent;
-import com.podcrash.api.kits.enums.ItemType;
-import com.podcrash.api.kits.iskilltypes.action.ICooldown;
-import com.podcrash.api.kits.skilltypes.BowShotSkill;
-import com.podcrash.api.kits.skilltypes.Instant;
+import com.podcrash.gamecore.kits.abilitytype.Cooldown;
 import com.podcrash.api.listeners.GameDamagerConverterListener;
-import org.bukkit.Location;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.abilitytype.Interact;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import java.util.Arrays;
+import java.util.List;
 
-public class QuickShot extends Instant implements ICooldown {
+public class QuickShot extends Ability implements Interact, Cooldown {
     //edit this.
     private final float damage = 6;
+
     @Override
     public float getCooldown() {
         return 25;
-    }
-
-    @Override
-    protected void doSkill(PlayerEvent event, Action action) {
-        if (onCooldown()) {
-            getPlayer().sendMessage(getCooldownMessage());
-            return;
-        }
-        if (rightClickCheck(action))
-            return;
-        Vector v = getPlayer().getLocation().getDirection().multiply(3);
-        Arrow arrow = getPlayer().launchProjectile(Arrow.class);
-        arrow.setVelocity(v);
-        GameDamagerConverterListener.forceAddArrow(arrow, damage);
-        getPlayer().sendMessage(getUsedMessage());
-        setLastUsed(System.currentTimeMillis());
     }
 
     @Override
@@ -44,7 +28,21 @@ public class QuickShot extends Instant implements ICooldown {
     }
 
     @Override
-    public ItemType getItemType() {
-        return ItemType.BOW;
+    public ItemStack getItem() {
+        return new ItemStack(Material.BOW);
+    }
+
+    @Override
+    public List<Action> getActions() {
+        return Arrays.asList(Action.LEFT_CLICK_AIR, Action.LEFT_CLICK_BLOCK);
+    }
+
+    @Override
+    public void doAbility() {
+        Player player = getKitPlayer().getPlayer();
+        Vector v = player.getLocation().getDirection().multiply(3);
+        Arrow arrow = player.launchProjectile(Arrow.class);
+        arrow.setVelocity(v);
+        GameDamagerConverterListener.forceAddArrow(arrow, damage);
     }
 }

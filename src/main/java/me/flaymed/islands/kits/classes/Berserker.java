@@ -2,14 +2,16 @@ package me.flaymed.islands.kits.classes;
 
 import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
+import me.flaymed.islands.kits.skills.berserker.AxeBoost;
+import me.flaymed.islands.kits.skills.berserker.Leap;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class Berserker extends Kit {
 
-    public Berserker(Class<? extends Ability>... abilities) {
-        super("Berserker", abilities);
+    public Berserker() {
+        super("Berserker", AxeBoost.class, Leap.class);
     }
 
     @Override

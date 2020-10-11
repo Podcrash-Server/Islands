@@ -1,4 +1,4 @@
-package me.flaymed.islands.command;
+package me.flaymed.islands.commands;
 
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import org.bukkit.command.CommandSender;

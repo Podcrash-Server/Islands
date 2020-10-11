@@ -1,95 +1,46 @@
 package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
-import com.podcrash.api.annotations.GameData;
-import com.podcrash.api.damage.DamageSource;
-import com.podcrash.api.db.pojos.map.IslandsMap;
-import com.podcrash.api.db.pojos.map.Point;
-import com.podcrash.api.game.*;
-import com.podcrash.api.game.objects.ItemObjective;
-import com.podcrash.api.game.objects.WinObjective;
-import com.podcrash.api.listeners.DeathHandler;
-import com.podcrash.api.plugin.PodcrashSpigot;
-import com.podcrash.api.world.BlockUtil;
+import com.podcrash.gamecore.game.Game;
+import com.podcrash.gamecore.kits.KitPlayerManager;
+import me.flaymed.islands.Islands;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.maker.BridgeGenerator;
-import me.flaymed.islands.events.GameStageEvent;
 import me.flaymed.islands.util.ChestGen;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
-import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Consumer;
 
-@GameData(name = "Islands")
 public class IslandsGame extends Game {
-    public static final DamageSource WATER_DAMAGE = () -> "Water Damage";
+    //TODO water dmg
     private GameStage stage;
     private BridgeGenerator bridgeGenerator;
     private String bridgeType;
 
-    public IslandsGame(int id, String name) {
-        super(id, name, GameType.DOM);
-        DeathHandler.setAllowPlayerDrops(true);
-    }
-
-    @Override
-    public int getAbsoluteMinPlayers() {
-        return 6;
-    }
-
-    @Override
-    public void leaveCheck() {
-
-    }
-
-    @Override
-    public Class<? extends com.podcrash.api.db.pojos.map.GameMap> getMapClass() {
-        return IslandsMap.class;
-    }
-
-    @Override
-    public TeamSettings getTeamSettings() {
-        return new TeamSettings.Builder()
-            .setTeamColors(TeamEnum.RED, TeamEnum.BLUE)
-            .setMax(12)
-            .setMin(6)
-            .build();
-    }
-
-    @Override
-    public String getMode() {
-        return "Islands";
+    public IslandsGame() {
+        super("Islands", 20, 48, 60);
     }
 
     public GameStage getStage() {
         return stage;
     }
 
-    @Override
-    public String getPresentableResult() {
-        return null;
-    }
-
     public void setStage(GameStage stage) {
         this.stage = stage;
-        Bukkit.getPluginManager().callEvent(new GameStageEvent(this, this.stage));
-    }
-    @Override
-    public List<WinObjective> getWinObjectives() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<ItemObjective> getItemObjectives() {
-        return Collections.emptyList();
+        //TODO: GameState Change event
     }
 
     /**
@@ -162,7 +113,7 @@ public class IslandsGame extends Game {
                 consumeChest(chestConsumer);
             }
         };
-        runnable.runTask(PodcrashSpigot.getInstance());
+        runnable.runTask(Islands.getInstance());
     }
 
 
@@ -230,5 +181,15 @@ public class IslandsGame extends Game {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void start() {
+        KitPlayerManager.gameStarts();
+    }
+
+    @Override
+    public void stop() {
+        KitPlayerManager.gameEnds();
     }
 }

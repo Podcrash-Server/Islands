@@ -5,16 +5,15 @@ import com.podcrash.api.annotations.GamePlugin;
 import com.podcrash.api.game.GameManager;
 import com.podcrash.api.plugin.IGamePlugin;
 import com.podcrash.api.plugin.PodcrashSpigot;
-import me.flaymed.islands.command.OreSettingCommand;
-import me.flaymed.islands.command.DropBridgeCommand;
-import me.flaymed.islands.game.IslandsGame;
+import me.flaymed.islands.commands.OreSettingCommand;
+import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @GamePlugin
-public class Main extends JavaPlugin implements IGamePlugin {
-    private static Main INSTANCE;
+public class Islands extends JavaPlugin implements IGamePlugin {
+    private static Islands INSTANCE;
     @Override
     public void onEnable() {
         INSTANCE = this;
@@ -42,7 +41,7 @@ public class Main extends JavaPlugin implements IGamePlugin {
         ProtocolLibrary.getProtocolManager().removePacketListeners(this);
     }
 
-    public static Main getInstance() {
+    public static Islands getInstance() {
         return INSTANCE;
     }
 }

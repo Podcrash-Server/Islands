@@ -1,20 +1,18 @@
 package me.flaymed.islands.commands;
 
 import me.flaymed.islands.util.ore.OreVeinSetting;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-public class OreSettingCommand extends BukkitCommand {
-    public OreSettingCommand() {
-        super("ore");
-    }
+public class OreSettingCommand implements CommandExecutor {
 
     @Override
-    public boolean execute(CommandSender sender, String cmd, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (!(sender instanceof Player))
             return true;
-        if (!sender.hasPermission("invicta.command.ore"))
+        if (!sender.hasPermission("pdc.islands.ore"))
             return true;
         Player p = (Player) sender;
         if (args.length == 0) {

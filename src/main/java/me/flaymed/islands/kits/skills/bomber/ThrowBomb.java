@@ -1,43 +1,28 @@
 package me.flaymed.islands.kits.skills.bomber;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.packetwrapper.abstractpackets.ILocationPacket;
 import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
-import com.podcrash.api.damage.DamageApplier;
-import com.podcrash.api.effect.particle.ParticleGenerator;
-import com.podcrash.api.game.GTeam;
-import com.podcrash.api.game.GameManager;
-import com.podcrash.api.game.TeamEnum;
-import com.podcrash.api.kits.enums.ItemType;
-import com.podcrash.api.kits.iskilltypes.action.ICharge;
-import com.podcrash.api.kits.iskilltypes.action.IPassiveTimer;
-import com.podcrash.api.kits.skilltypes.Passive;
-import com.podcrash.api.plugin.PodcrashSpigot;
-import com.podcrash.api.time.TimeHandler;
+import com.podcrash.gamecore.kits.abilitytype.ChargedAbility;
+import com.podcrash.gamecore.kits.abilitytype.Interact;
+import me.flaymed.islands.Islands;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
-
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
-    private final Set<Integer> bomberMap = new HashSet<>();
-    private final int MAX_TNT = 2;
-
-    @Override
-    public void start() {
-        if (getPlayer() != null) TimeHandler.repeatedTimeAsync(30L * 20L, 0L, this);
-    }
+public class ThrowBomb extends ChargedAbility implements Interact {
+    private final HashMap<Integer, Integer> bomberMap = new HashMap<>();
+    private final int MAX_TNT = 3;
 
     @Override
     public void addCharge() {
@@ -45,9 +30,29 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
         if (getTNTCount() >= MAX_TNT) {
 
         } else {
-            getPlayer().getInventory().addItem(new ItemStack(Material.TNT, 1));
-            getPlayer().updateInventory();
+            getKitPlayer().getPlayer().getInventory().addItem(new ItemStack(Material.TNT, 1));
+            getKitPlayer().getPlayer().updateInventory();
         }
+    }
+
+    @Override
+    public void removeCharge() {
+
+    }
+
+    @Override
+    public String getChargeName() {
+        return null;
+    }
+
+    @Override
+    public boolean startsWithMaxCharges() {
+        return false;
+    }
+
+    @Override
+    public int getSecondsBetweenCharge() {
+        return 20;
     }
 
     @Override
@@ -61,74 +66,69 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
     }
 
     @Override
+    public boolean passivelyGainCharges() {
+        return false;
+    }
+
+    @Override
     public String getName() {
         return "TNT Throw";
     }
 
     @Override
-    public ItemType getItemType() {
-        return null;
+    public ItemStack getItem() {
+        return new ItemStack(Material.TNT);
     }
 
     @Override
-    public void task() {
-        addCharge();
-    }
+    public void doAbility() {
 
-    @Override
-    public boolean cancel() {
-        return false;
-    }
-
-    @Override
-    public void cleanup() {
-    }
-
-    @EventHandler
-    public void playerInteract(PlayerInteractEvent e) {
-        if (getPlayer() != e.getPlayer()) return;
-
-        if (!getPlayer().getItemInHand().getType().equals(Material.TNT))
-            return;
         if (getTNTCount() == 0) {
-            getPlayer().sendMessage(getNoChargeMessage());
+            getKitPlayer().getPlayer().sendMessage(getNoChargesMessage());
             return;
         }
 
-        e.setCancelled(true);
-        removeItemFromHand(getPlayer());
-        getPlayer().updateInventory();
+        removeItemFromHand(getKitPlayer().getPlayer());
+        getKitPlayer().getPlayer().updateInventory();
 
 
-        Vector tntV = getPlayer().getLocation().getDirection().multiply(0.8);
-        TNTPrimed tnt = (TNTPrimed) getPlayer().getWorld().spawnEntity(getPlayer().getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
+        Vector tntV = getKitPlayer().getPlayer().getLocation().getDirection().multiply(0.8);
+        TNTPrimed tnt = (TNTPrimed) getKitPlayer().getPlayer().getWorld().spawnEntity(getKitPlayer().getPlayer().getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
         tnt.setVelocity(tntV);
-        bomberMap.add(tnt.getEntityId());
 
-        GTeam team = GameManager.getGame().getTeam(getPlayer());
-        TeamEnum teamEnum = team.getTeamEnum();
+
+        //TODO team stuff
 
         float[] RGB = new float[] {
-            teamEnum.getRed()/255F - 1F,
-            teamEnum.getGreen()/255F,
-            teamEnum.getBlue()/255F
+                teamEnum.getRed()/255F - 1F,
+                teamEnum.getGreen()/255F,
+                teamEnum.getBlue()/255F
         };
-        PodcrashSpigot.debugLog(Arrays.toString(RGB));
-        WrapperPlayServerWorldParticles particle = ParticleGenerator.createParticle(tnt.getLocation().toVector(),
+
+        WrapperPlayServerWorldParticles particle = createParticle(tnt.getLocation().toVector(),
                 EnumWrappers.Particle.REDSTONE, new int[]{}, 0,
                 RGB[0], RGB[1], RGB[2]);
 
         particle.setParticleData(1F);
-        ParticleGenerator.generateEntity(tnt, particle, null);
-        PodcrashSpigot.debugLog(particle.toString());
 
+        int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Islands.getInstance(), () -> {
+            for (Player player: Bukkit.getOnlinePlayers()) {
+                particle.sendPacket(player);
+            }
+        }, 10, 10);
 
-        getPlayer().sendMessage(getUsedMessage());
+        bomberMap.put(tnt.getEntityId(), taskid);
+        getKitPlayer().getPlayer().sendMessage(getUsedMessage());
+    }
+
+    @Override
+    public List<Action> getActions() {
+        return Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK, Action.LEFT_CLICK_BLOCK, Action.LEFT_CLICK_AIR);
     }
 
     private int getTNTCount() {
         int i = 0;
-        for (ItemStack stack : getPlayer().getInventory()) {
+        for (ItemStack stack : getKitPlayer().getPlayer().getInventory()) {
             if (stack == null) continue;
             boolean isTNT = stack.getType() == Material.TNT;
             if (!isTNT) continue;
@@ -139,17 +139,18 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
     @EventHandler
     public void explode(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof LivingEntity)) return;
-        if (!bomberMap.contains(e.getDamager().getEntityId())) return;
+        if (!bomberMap.containsKey(e.getDamager().getEntityId())) return;
 
         e.setCancelled(true);
         double dmg = e.getDamage();
-        PodcrashSpigot.debugLog("destruction");
-        DamageApplier.damage((LivingEntity) e.getEntity(), getPlayer(), dmg, this, false);
+        ((LivingEntity) e.getEntity()).damage(dmg);
+        int taskid = bomberMap.get(e.getDamager().getEntityId());
+        Bukkit.getScheduler().cancelTask(taskid);
     }
 
     @EventHandler
     public void explode(EntityExplodeEvent e) {
-        if (!bomberMap.contains(e.getEntity().getEntityId())) return;
+        if (!bomberMap.containsKey(e.getEntity().getEntityId())) return;
         e.setYield(1.0F);
     }
 
@@ -161,9 +162,25 @@ public class ThrowBomb extends Passive implements ICharge, IPassiveTimer {
             item.setAmount(amnt - 1);
         }else {
             PlayerInventory inventory = player.getInventory();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PodcrashSpigot.getInstance(), () -> inventory.clear(slot), 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Islands.getInstance(), () -> inventory.clear(slot), 1);
         }
         player.updateInventory();
+    }
+
+    public WrapperPlayServerWorldParticles createParticle(Vector vector, EnumWrappers.Particle particle, int[] data, int particleCount, float offsetX, float offsetY, float offsetZ) {
+        if (vector == null)
+            vector = new Vector(0, 0,0);
+        WrapperPlayServerWorldParticles packet = new WrapperPlayServerWorldParticles();
+        packet.setParticleType(particle);
+        packet.setX((float) vector.getX());
+        packet.setY((float) vector.getY());
+        packet.setZ((float) vector.getZ());
+        packet.setNumberOfParticles(particleCount);
+        packet.setOffsetX(offsetX);
+        packet.setOffsetY(offsetY);
+        packet.setOffsetZ(offsetZ);
+        packet.setData(data);
+        return packet;
     }
 
 }

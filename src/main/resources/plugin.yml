@@ -3,8 +3,13 @@ main: me.flaymed.islands.Main
 version: 0.1
 author: Flaymed
 
-softdepend: [ProtocolLib, PodcrashAPI]
 commands:
   leave:
     description: Leave a game.
     usage: /leave
+  ore:
+    description: Change ore settings
+    usage: /ore
+  bridges:
+    description: Drop the bridges
+    usage: /bridges

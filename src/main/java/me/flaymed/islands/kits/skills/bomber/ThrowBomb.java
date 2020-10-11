@@ -7,6 +7,7 @@ import com.podcrash.gamecore.kits.abilitytype.ChargedAbility;
 import com.podcrash.gamecore.kits.abilitytype.Interact;
 import me.flaymed.islands.Islands;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -23,16 +24,13 @@ import java.util.List;
 public class ThrowBomb extends ChargedAbility implements Interact {
     private final HashMap<Integer, Integer> bomberMap = new HashMap<>();
     private final int MAX_TNT = 3;
+    private int tnt = 3;
 
     @Override
     public void addCharge() {
-
-        if (getTNTCount() >= MAX_TNT) {
-
-        } else {
-            getKitPlayer().getPlayer().getInventory().addItem(new ItemStack(Material.TNT, 1));
-            getKitPlayer().getPlayer().updateInventory();
-        }
+        if (getTNTCount() >= MAX_TNT) return;
+        getKitPlayer().getPlayer().getInventory().addItem(new ItemStack(Material.TNT, 1));
+        getKitPlayer().getPlayer().updateInventory();
     }
 
     @Override
@@ -96,14 +94,13 @@ public class ThrowBomb extends ChargedAbility implements Interact {
         TNTPrimed tnt = (TNTPrimed) getKitPlayer().getPlayer().getWorld().spawnEntity(getKitPlayer().getPlayer().getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
         tnt.setVelocity(tntV);
 
-
-        //TODO team stuff
-
-        float[] RGB = new float[] {
-                teamEnum.getRed()/255F - 1F,
-                teamEnum.getGreen()/255F,
-                teamEnum.getBlue()/255F
-        };
+        float[] RGB = new float[0];
+        ChatColor color = getKitPlayer().getTeam().getSide().getColor();
+        if (color == ChatColor.RED) RGB = new float[] {255/255F - 1F, 85/255F, 85/255F};
+        if (color == ChatColor.BLUE) RGB = new float[] {85/255F - 1F, 85/255F, 255/255F};
+        if (color == ChatColor.GREEN) RGB = new float[] {85/255F - 1F, 255/255F, 85/255F};
+        if (color == ChatColor.YELLOW) RGB = new float[] {255/255F - 1F, 255/255F, 85/255F};
+        
 
         WrapperPlayServerWorldParticles particle = createParticle(tnt.getLocation().toVector(),
                 EnumWrappers.Particle.REDSTONE, new int[]{}, 0,
@@ -119,6 +116,7 @@ public class ThrowBomb extends ChargedAbility implements Interact {
 
         bomberMap.put(tnt.getEntityId(), taskid);
         getKitPlayer().getPlayer().sendMessage(getUsedMessage());
+        removeCharge();
     }
 
     @Override

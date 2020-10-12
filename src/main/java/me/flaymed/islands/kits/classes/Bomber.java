@@ -1,7 +1,7 @@
 package me.flaymed.islands.kits.classes;
 
-import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
+import me.flaymed.islands.kits.skills.bomber.ThrowBomb;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class Bomber extends Kit {
 
 
-    public Bomber(Class<? extends Ability>... abilities) {
-        super("Bomber", abilities);
+    public Bomber() {
+        super("Bomber", ThrowBomb.class);
     }
 
     @Override

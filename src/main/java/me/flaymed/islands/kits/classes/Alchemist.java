@@ -1,21 +1,22 @@
 package me.flaymed.islands.kits.classes;
 
-import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
+import me.flaymed.islands.kits.skills.alchemist.Rush;
+import me.flaymed.islands.kits.skills.alchemist.PeaceKeeper;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import java.util.List;
 
-public class Medic extends Kit {
+public class Alchemist extends Kit {
 
-    public Medic(Class<? extends Ability>... abilities) {
-        super("Medic", abilities);
+    public Alchemist() {
+        super("Alchemist", PeaceKeeper.class, Rush.class);
     }
 
     @Override
     public String getPermission() {
-        return "islands.medic";
+        return "islands.alchemist";
     }
 
     @Override

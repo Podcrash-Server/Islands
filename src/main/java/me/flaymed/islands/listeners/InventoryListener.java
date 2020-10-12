@@ -20,8 +20,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
 
 public class InventoryListener extends ListenerBase {
 
@@ -66,7 +64,7 @@ public class InventoryListener extends ListenerBase {
                 equipKit(player, new Archer(player));
                 break;
             case POTION:
-                equipKit(player, new Medic(player));
+                equipKit(player, new Alchemist(player));
                 break;
             case DIAMOND_PICKAXE:
                 equipKit(player, new Miner(player));

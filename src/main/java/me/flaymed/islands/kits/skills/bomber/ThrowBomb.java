@@ -24,7 +24,6 @@ import java.util.List;
 public class ThrowBomb extends ChargedAbility implements Interact {
     private final HashMap<Integer, Integer> bomberMap = new HashMap<>();
     private final int MAX_TNT = 3;
-    private int tnt = 3;
 
     @Override
     public void addCharge() {
@@ -35,17 +34,24 @@ public class ThrowBomb extends ChargedAbility implements Interact {
 
     @Override
     public void removeCharge() {
-
+        removeItemFromHand(getKitPlayer().getPlayer());
+        getKitPlayer().getPlayer().updateInventory();
     }
 
     @Override
     public String getChargeName() {
-        return null;
+        return "Throwable TNT";
     }
 
     @Override
     public boolean startsWithMaxCharges() {
         return false;
+    }
+
+    @Override
+    public void setCharges(int amount) {
+        getKitPlayer().getPlayer().getInventory().addItem(new ItemStack(Material.TNT, amount));
+        getKitPlayer().getPlayer().updateInventory();
     }
 
     @Override
@@ -65,7 +71,7 @@ public class ThrowBomb extends ChargedAbility implements Interact {
 
     @Override
     public boolean passivelyGainCharges() {
-        return false;
+        return true;
     }
 
     @Override
@@ -86,10 +92,6 @@ public class ThrowBomb extends ChargedAbility implements Interact {
             return;
         }
 
-        removeItemFromHand(getKitPlayer().getPlayer());
-        getKitPlayer().getPlayer().updateInventory();
-
-
         Vector tntV = getKitPlayer().getPlayer().getLocation().getDirection().multiply(0.8);
         TNTPrimed tnt = (TNTPrimed) getKitPlayer().getPlayer().getWorld().spawnEntity(getKitPlayer().getPlayer().getLocation().add(0, 1, 0), EntityType.PRIMED_TNT);
         tnt.setVelocity(tntV);
@@ -100,12 +102,10 @@ public class ThrowBomb extends ChargedAbility implements Interact {
         if (color == ChatColor.BLUE) RGB = new float[] {85/255F - 1F, 85/255F, 255/255F};
         if (color == ChatColor.GREEN) RGB = new float[] {85/255F - 1F, 255/255F, 85/255F};
         if (color == ChatColor.YELLOW) RGB = new float[] {255/255F - 1F, 255/255F, 85/255F};
-        
 
         WrapperPlayServerWorldParticles particle = createParticle(tnt.getLocation().toVector(),
                 EnumWrappers.Particle.REDSTONE, new int[]{}, 0,
                 RGB[0], RGB[1], RGB[2]);
-
         particle.setParticleData(1F);
 
         int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Islands.getInstance(), () -> {
@@ -165,7 +165,7 @@ public class ThrowBomb extends ChargedAbility implements Interact {
         player.updateInventory();
     }
 
-    public WrapperPlayServerWorldParticles createParticle(Vector vector, EnumWrappers.Particle particle, int[] data, int particleCount, float offsetX, float offsetY, float offsetZ) {
+    private WrapperPlayServerWorldParticles createParticle(Vector vector, EnumWrappers.Particle particle, int[] data, int particleCount, float offsetX, float offsetY, float offsetZ) {
         if (vector == null)
             vector = new Vector(0, 0,0);
         WrapperPlayServerWorldParticles packet = new WrapperPlayServerWorldParticles();

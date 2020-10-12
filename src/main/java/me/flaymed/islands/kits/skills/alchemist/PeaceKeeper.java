@@ -1,10 +1,12 @@
-package me.flaymed.islands.kits.skills.medic;
+package me.flaymed.islands.kits.skills.alchemist;
 
 import com.podcrash.api.effect.status.Status;
 import com.podcrash.api.effect.status.StatusApplier;
 import com.podcrash.api.kits.iskilltypes.action.IConstruct;
-import com.podcrash.api.kits.skilltypes.Passive;
-import org.bukkit.ChatColor;
+import com.podcrash.gamecore.GameCore;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.abilitytype.AfterConstruct;
+import com.podcrash.gamecore.kits.abilitytype.Passive;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -13,22 +15,22 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PeaceKeeper extends Passive implements IConstruct {
+public class PeaceKeeper extends Ability implements Passive, AfterConstruct {
     //add more if needed.
     private final Set<Material> DIAMOND_MATERIALS = new HashSet<>(
         Arrays.asList(Material.DIAMOND_AXE, Material.DIAMOND_SWORD,
                 Material.DIAMOND_LEGGINGS, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET, Material.DIAMOND_BOOTS));
-    private String kit = "Medic";
-    private String noUseMessage = String.format("%s Skill> %sYou cannot use this item as a %s!", ChatColor.BLUE, ChatColor.GRAY, kit);
+    private String kit = "Alchemist";
+    private String noUseMessage = String.format("%s You cannot use this item as a %s!", GameCore.getKitPrefix(), kit);
 
-    public PeaceKeeper() {
-
-    }
 
     @Override
     public String getName() {
@@ -36,8 +38,18 @@ public class PeaceKeeper extends Passive implements IConstruct {
     }
 
     @Override
-    public void afterConstruction() {
-        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.SATURATION, Integer.MAX_VALUE, 5, true);
+    public ItemStack getItem() {
+        return null;
+    }
+
+    @Override
+    public Player getPlayer() {
+        return getKitPlayer().getPlayer();
+    }
+
+    @Override
+    public void afterConstruct() {
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, Integer.MAX_VALUE, 5));
     }
 
     @EventHandler

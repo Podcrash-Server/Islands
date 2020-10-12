@@ -1,6 +1,10 @@
 package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
+import com.podcrash.api.damage.DamageSource;
+import com.podcrash.api.db.pojos.map.IslandsMap;
+import com.podcrash.api.db.pojos.map.Point;
+import com.podcrash.api.world.BlockUtil;
 import com.podcrash.gamecore.game.Game;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import me.flaymed.islands.Islands;
@@ -18,14 +22,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class IslandsGame extends Game {
     //TODO water dmg
+    public static final DamageSource WATER_DAMAGE = () -> "Water Damage";
     private GameStage stage;
     private BridgeGenerator bridgeGenerator;
     private String bridgeType;

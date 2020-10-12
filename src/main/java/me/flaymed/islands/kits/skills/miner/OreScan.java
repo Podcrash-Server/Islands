@@ -1,18 +1,21 @@
 package me.flaymed.islands.kits.skills.miner;
 
-import com.podcrash.api.kits.enums.ItemType;
-import com.podcrash.api.kits.iskilltypes.action.ICooldown;
-import com.podcrash.api.kits.skilltypes.Instant;
+import com.podcrash.gamecore.GameCore;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.abilitytype.Cooldown;
+import com.podcrash.gamecore.kits.abilitytype.Interact;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import java.util.Arrays;
+import java.util.List;
 
-public class OreScan extends Instant implements ICooldown {
+public class OreScan extends Ability implements Cooldown, Interact {
     private final double radius = 8;
     private final OreData[] oreArray;
 
@@ -38,16 +41,19 @@ public class OreScan extends Instant implements ICooldown {
         this.oreArray = OreData.values();
     }
 
-    private OreData findByPickaxe(Material material) {
-        for (OreData data : oreArray) {
-            if (data.pickaxe.equals(material))
-                return data;
-        }
+    @Override
+    public String getName() {
+        return "Ore Scan";
+    }
+
+    @Override
+    public ItemStack getItem() {
         return null;
     }
+
     @Override
-    protected void doSkill(PlayerEvent event, Action action) {
-        Player player = event.getPlayer();
+    public void doAbility() {
+        Player player = getKitPlayer().getPlayer();
         if (onCooldown()) {
             player.sendMessage(getCooldownMessage());
             return;
@@ -73,7 +79,6 @@ public class OreScan extends Instant implements ICooldown {
 
         boolean canceled = false;
 
-        setLastUsed(System.currentTimeMillis());
         for (double  x = bottomX; x <= higherX; x++) {
             if (canceled) {
                 canceled = false;
@@ -101,10 +106,10 @@ public class OreScan extends Instant implements ICooldown {
                         Vector dir = target.clone().subtract(player.getEyeLocation()).toVector();
                         Location loc = player.getLocation().setDirection(dir);
                         player.teleport(loc);
-                        player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s Success, located %s%s ore%s! ", ChatColor.GRAY, data.color, data.name, ChatColor.GRAY));
+                        player.sendMessage(String.format("%s Success, located %s%s ore%s! ", GameCore.getKitPrefix(), data.color, data.name, ChatColor.GRAY));
                         canceled = true;
                     } else if (searchConcluded) {
-                        player.sendMessage(String.format(ChatColor.BLUE + "Skill>%s No %s ore found ;-;", ChatColor.GRAY, data.name));
+                        player.sendMessage(String.format("%s No %s ore found ;-;", GameCore.getKitPrefix(), data.name));
                         canceled = true;
                     }
                 }
@@ -113,8 +118,8 @@ public class OreScan extends Instant implements ICooldown {
     }
 
     @Override
-    public String getName() {
-        return "Ore Scan";
+    public List<Action> getActions() {
+        return Arrays.asList(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK);
     }
 
     @Override
@@ -122,8 +127,12 @@ public class OreScan extends Instant implements ICooldown {
         return 30;
     }
 
-    @Override
-    public ItemType getItemType() {
-        return ItemType.PICKAXE;
+    private OreData findByPickaxe(Material material) {
+        for (OreData data : oreArray) {
+            if (data.pickaxe.equals(material))
+                return data;
+        }
+        return null;
     }
+
 }

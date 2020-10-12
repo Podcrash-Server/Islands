@@ -2,14 +2,16 @@ package me.flaymed.islands.kits.classes;
 
 import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
+import me.flaymed.islands.kits.skills.miner.OreScan;
+import me.flaymed.islands.kits.skills.miner.QuickMine;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class Miner extends Kit {
 
-    public Miner(Class<? extends Ability>... abilities) {
-        super("Miner", abilities);
+    public Miner() {
+        super("Miner", OreScan.class, QuickMine.class);
     }
 
     @Override

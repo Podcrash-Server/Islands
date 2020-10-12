@@ -4,6 +4,8 @@ import com.podcrash.gamecore.GameCore;
 import com.podcrash.gamecore.kits.abilitytype.ChargedAbility;
 import com.podcrash.gamecore.kits.abilitytype.Cooldown;
 import com.podcrash.gamecore.kits.abilitytype.Interact;
+import me.flaymed.islands.Islands;
+import me.flaymed.islands.game.GameStage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -61,7 +63,7 @@ public class Leap extends ChargedAbility implements Cooldown, Interact {
         player.setVelocity(v);
         getKitPlayer().getPlayer().setFallDistance(0);
         player.getWorld().playSound(player.getLocation(), Sound.ENDERDRAGON_WINGS, 1, 1);
-        charges--;
+        if (Islands.getInstance().getGame().getStage() == GameStage.FALLEN) removeCharge();
 
         player.sendMessage(getCurrentChargeMessage());
     }
@@ -98,6 +100,11 @@ public class Leap extends ChargedAbility implements Cooldown, Interact {
     @Override
     public boolean startsWithMaxCharges() {
         return true;
+    }
+
+    @Override
+    public void setCharges(int amount) {
+        return;
     }
 
     @Override

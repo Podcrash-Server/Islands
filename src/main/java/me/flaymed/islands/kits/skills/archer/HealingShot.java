@@ -1,7 +1,5 @@
 package me.flaymed.islands.kits.skills.archer;
 
-import com.podcrash.api.effect.status.Status;
-import com.podcrash.api.effect.status.StatusApplier;
 import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.abilitytype.Cooldown;
 import com.podcrash.gamecore.kits.abilitytype.Passive;
@@ -14,6 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import java.util.List;
 
 public class HealingShot extends Ability implements Passive, Cooldown {
@@ -40,16 +41,15 @@ public class HealingShot extends Ability implements Passive, Cooldown {
         if (e.getPlayer() != player) return;
         if (e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK) return;
         List<LivingEntity> entities = player.getWorld().getLivingEntities();
-        StatusApplier.getOrNew(player).applyStatus(Status.REGENERATION, 5, 1, true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 1));
         player.sendMessage(getUsedMessage());
         for (LivingEntity entity : entities) {
             if (!(entity instanceof Player)) continue;
             Player player1 = (Player) entity;
             Player player2 = player;
             if (distance(player1.getLocation().getX(), player1.getLocation().getZ(), player2.getLocation().getX(), player2.getLocation().getZ()) > 5.0) continue;
-            //TODO: ally stuff
-            //if (!isAlly(player1)) continue;
-            StatusApplier.getOrNew(player1).applyStatus(Status.REGENERATION, 5, 1, true);
+            if (!getKitPlayer().isAlly(player1)) continue;
+            player1.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 1));
             IslandsParticleGenerator.particleOverPlayer(player1);
         }
     }

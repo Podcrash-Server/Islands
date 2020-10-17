@@ -1,7 +1,5 @@
 package me.flaymed.islands.kits.skills.miner;
 
-import com.podcrash.api.effect.status.Status;
-import com.podcrash.api.effect.status.StatusApplier;
 import com.podcrash.gamecore.GameCore;
 import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.abilitytype.AfterConstruct;
@@ -56,7 +54,7 @@ public class QuickMine extends Ability implements Cooldown, Interact, AfterConst
 
     @Override
     public void afterConstruct() {
-        StatusApplier.getOrNew(getPlayer()).applyStatus(Status.HASTE, Integer.MAX_VALUE, 1, true);
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Integer.MAX_VALUE, 1));
     }
 
     @Override

@@ -1,11 +1,12 @@
 package me.flaymed.islands.kits.skills.bomber;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.packetwrapper.abstractpackets.ILocationPacket;
 import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
+import com.podcrash.gamecore.kits.KitPlayerManager;
 import com.podcrash.gamecore.kits.abilitytype.ChargedAbility;
 import com.podcrash.gamecore.kits.abilitytype.Interact;
 import me.flaymed.islands.Islands;
+import me.flaymed.islands.util.IslandsParticleGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,12 +18,12 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class ThrowBomb extends ChargedAbility implements Interact {
-    private final HashMap<Integer, Integer> bomberMap = new HashMap<>();
+    private final List<Integer> bomberMap = new ArrayList<>();
     private final int MAX_TNT = 3;
 
     @Override
@@ -103,18 +104,13 @@ public class ThrowBomb extends ChargedAbility implements Interact {
         if (color == ChatColor.GREEN) RGB = new float[] {85/255F - 1F, 255/255F, 85/255F};
         if (color == ChatColor.YELLOW) RGB = new float[] {255/255F - 1F, 255/255F, 85/255F};
 
-        WrapperPlayServerWorldParticles particle = createParticle(tnt.getLocation().toVector(),
+        WrapperPlayServerWorldParticles particle = IslandsParticleGenerator.createParticle(tnt.getLocation().toVector(),
                 EnumWrappers.Particle.REDSTONE, new int[]{}, 0,
                 RGB[0], RGB[1], RGB[2]);
         particle.setParticleData(1F);
+        IslandsParticleGenerator.asyncSend(particle, KitPlayerManager.getPlayers());
 
-        int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Islands.getInstance(), () -> {
-            for (Player player: Bukkit.getOnlinePlayers()) {
-                particle.sendPacket(player);
-            }
-        }, 10, 10);
-
-        bomberMap.put(tnt.getEntityId(), taskid);
+        bomberMap.add(tnt.getEntityId());
         getKitPlayer().getPlayer().sendMessage(getUsedMessage());
         removeCharge();
     }
@@ -137,7 +133,7 @@ public class ThrowBomb extends ChargedAbility implements Interact {
     @EventHandler
     public void explode(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof LivingEntity)) return;
-        if (!bomberMap.containsKey(e.getDamager().getEntityId())) return;
+        if (!bomberMap.contains(e.getDamager().getEntityId())) return;
 
         e.setCancelled(true);
         double dmg = e.getDamage();
@@ -148,7 +144,7 @@ public class ThrowBomb extends ChargedAbility implements Interact {
 
     @EventHandler
     public void explode(EntityExplodeEvent e) {
-        if (!bomberMap.containsKey(e.getEntity().getEntityId())) return;
+        if (!bomberMap.contains(e.getEntity().getEntityId())) return;
         e.setYield(1.0F);
     }
 
@@ -163,22 +159,6 @@ public class ThrowBomb extends ChargedAbility implements Interact {
             Bukkit.getScheduler().scheduleSyncDelayedTask(Islands.getInstance(), () -> inventory.clear(slot), 1);
         }
         player.updateInventory();
-    }
-
-    private WrapperPlayServerWorldParticles createParticle(Vector vector, EnumWrappers.Particle particle, int[] data, int particleCount, float offsetX, float offsetY, float offsetZ) {
-        if (vector == null)
-            vector = new Vector(0, 0,0);
-        WrapperPlayServerWorldParticles packet = new WrapperPlayServerWorldParticles();
-        packet.setParticleType(particle);
-        packet.setX((float) vector.getX());
-        packet.setY((float) vector.getY());
-        packet.setZ((float) vector.getZ());
-        packet.setNumberOfParticles(particleCount);
-        packet.setOffsetX(offsetX);
-        packet.setOffsetY(offsetY);
-        packet.setOffsetZ(offsetZ);
-        packet.setData(data);
-        return packet;
     }
 
 }

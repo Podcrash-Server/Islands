@@ -4,8 +4,6 @@ import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import com.podcrash.gamecore.kits.abilitytype.Passive;
-import com.podcrash.api.listeners.GameDamagerConverterListener;
-import com.podcrash.api.sound.SoundPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,8 +57,7 @@ public class Barrage extends Ability implements Passive {
                 Vector vector1 = new Vector(x, z, y);
                 Arrow arrow1 = world.spawnArrow(location, vector.clone().add(vector1).normalize(), speed, 0);
                 arrow1.setShooter(player);
-                GameDamagerConverterListener.forceAddArrow(arrow1, 0.9F);
-                SoundPlayer.sendSound(player.getLocation(), "random.bow", 0.12F, 70);
+                player.playSound(player.getLocation(), "random.bow", 0.12F, 1);
 
             }
         }

@@ -1,7 +1,6 @@
 package me.flaymed.islands.kits.skills.archer;
 
 import com.podcrash.gamecore.kits.abilitytype.Cooldown;
-import com.podcrash.api.listeners.GameDamagerConverterListener;
 import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.abilitytype.Interact;
 import org.bukkit.Material;
@@ -43,6 +42,5 @@ public class QuickShot extends Ability implements Interact, Cooldown {
         Vector v = player.getLocation().getDirection().multiply(3);
         Arrow arrow = player.launchProjectile(Arrow.class);
         arrow.setVelocity(v);
-        GameDamagerConverterListener.forceAddArrow(arrow, damage);
     }
 }

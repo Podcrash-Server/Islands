@@ -2,7 +2,7 @@ package me.flaymed.islands.kits.classes;
 
 import com.podcrash.gamecore.kits.Kit;
 import me.flaymed.islands.kits.skills.archer.Barrage;
-import me.flaymed.islands.kits.skills.archer.SkillSelect;
+import me.flaymed.islands.kits.skills.archer.RopedArrow;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.List;
 public class Archer extends Kit {
 
     public Archer() {
-        //Only add SkillSelect and Barrage because other abilities are added through SkillSelect.
-        super("Archer", Barrage.class, SkillSelect.class);
+        //Add SkillSelect later, going with just barrage and roped arrow for now.
+        super("Archer", Barrage.class, RopedArrow.class);
     }
 
     @Override

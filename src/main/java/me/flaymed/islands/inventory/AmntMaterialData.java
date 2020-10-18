@@ -3,7 +3,6 @@ package me.flaymed.islands.inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
 import java.util.Objects;
 
 public class AmntMaterialData {

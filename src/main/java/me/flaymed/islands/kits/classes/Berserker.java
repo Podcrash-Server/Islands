@@ -1,6 +1,5 @@
 package me.flaymed.islands.kits.classes;
 
-import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
 import me.flaymed.islands.kits.skills.berserker.AxeBoost;
 import me.flaymed.islands.kits.skills.berserker.Leap;

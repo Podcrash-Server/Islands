@@ -1,12 +1,8 @@
 package me.flaymed.islands.listeners;
 
 import com.packetwrapper.abstractpackets.WrapperPlayServerWorldEvent;
-import com.podcrash.api.effect.particle.ParticleGenerator;
-import com.podcrash.api.effect.status.Status;
-import com.podcrash.api.effect.status.StatusApplier;
-import com.podcrash.api.listeners.ListenerBase;
-import com.podcrash.api.plugin.PodcrashSpigot;
-import com.podcrash.api.sound.SoundPlayer;
+import me.flaymed.islands.Islands;
+import me.flaymed.islands.util.IslandsParticleGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,6 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class SoupListener extends ListenerBase {
     public SoupListener(JavaPlugin plugin) {
@@ -33,13 +31,16 @@ public class SoupListener extends ListenerBase {
         if (action == Action.PHYSICAL) return;
         if (item.getType() != Material.MUSHROOM_SOUP) return;
 
-        StatusApplier.getOrNew(p).applyStatus(Status.REGENERATION, 4, 1, true, true);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 3));
         Location location = p.getEyeLocation();
-        SoundPlayer.sendSound(location, "random.eat", 0.85F, 63, null);
-        WrapperPlayServerWorldEvent red = ParticleGenerator.createBlockEffect(location, Material.RED_MUSHROOM.getId());
-        WrapperPlayServerWorldEvent brown = ParticleGenerator.createBlockEffect(location, Material.BROWN_MUSHROOM.getId());
+        p.playSound(location, "random.eat", 0.85F, 2);
+        WrapperPlayServerWorldEvent red = IslandsParticleGenerator.createBlockEffect(location.toVector(), Material.RED_MUSHROOM.getId());
+        WrapperPlayServerWorldEvent brown = IslandsParticleGenerator.createBlockEffect(location.toVector(), Material.BROWN_MUSHROOM.getId());
 
-        for(Player v : p.getWorld().getPlayers()) ParticleGenerator.generate(v, red, brown);
+        for(Player player : p.getWorld().getPlayers()) {
+            red.sendPacket(player);
+            brown.sendPacket(player);
+        }
         removeItemFromHand(p);
         p.updateInventory();
     }
@@ -52,7 +53,7 @@ public class SoupListener extends ListenerBase {
             item.setAmount(amnt - 1);
         }else {
             PlayerInventory inventory = player.getInventory();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PodcrashSpigot.getInstance(), () -> inventory.clear(slot), 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Islands.getInstance(), () -> inventory.clear(slot), 1);
         }
         player.updateInventory();
     }

@@ -1,7 +1,8 @@
 package me.flaymed.islands.util;
 
-import com.podcrash.api.game.Game;
-import com.podcrash.api.game.GameManager;
+import com.podcrash.gamecore.kits.KitPlayerManager;
+import me.flaymed.islands.Islands;
+import me.flaymed.islands.game.IslandsGame;
 import net.jafama.FastMath;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,15 +35,14 @@ public final class CompassTracker {
         }
     }
     public static CompassResult findCompassResult(Player compassHolder) {
-        Game game = GameManager.getGame();
+        IslandsGame game = Islands.getInstance().getGame();
         if (game == null)
             return new CompassResult(compassHolder, 0, compassHolder.getLocation().toVector());
         Player currPlayer = compassHolder;
         double dist = Double.MAX_VALUE;
         Location compassLoc = compassHolder.getLocation();
-        for (Player player : game.getBukkitPlayers()) {
-            if (game.isOnSameTeam(player, compassHolder))
-                continue;
+        for (Player player : KitPlayerManager.getPlayers()) {
+            if (KitPlayerManager.isOnSameTeam(player, compassHolder)) continue;
             Location location = player.getLocation();
             double check = location.distanceSquared(compassLoc);
             if (check < dist) {

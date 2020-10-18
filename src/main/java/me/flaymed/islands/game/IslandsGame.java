@@ -1,10 +1,6 @@
 package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
-import com.podcrash.api.damage.DamageSource;
-import com.podcrash.api.db.pojos.map.IslandsMap;
-import com.podcrash.api.db.pojos.map.Point;
-import com.podcrash.api.world.BlockUtil;
 import com.podcrash.gamecore.game.Game;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import me.flaymed.islands.Islands;

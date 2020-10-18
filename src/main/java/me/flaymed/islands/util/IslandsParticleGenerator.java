@@ -1,7 +1,9 @@
 package me.flaymed.islands.util;
 
+import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.packetwrapper.abstractpackets.AbstractPacket;
+import com.packetwrapper.abstractpackets.WrapperPlayServerWorldEvent;
 import com.packetwrapper.abstractpackets.WrapperPlayServerWorldParticles;
 import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.KitPlayerManager;
@@ -9,6 +11,7 @@ import me.flaymed.islands.Islands;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -63,6 +66,14 @@ public final class IslandsParticleGenerator {
         packet.setOffsetZ(offsetZ);
         packet.setData(data);
         return packet;
+    }
+
+    public static WrapperPlayServerWorldEvent createBlockEffect(Vector vector, int blockID) {
+        WrapperPlayServerWorldEvent event = new WrapperPlayServerWorldEvent();
+        event.setLocation(new BlockPosition(vector));
+        event.setEffectId(2001);
+        event.setData(blockID);
+        return event;
     }
 
 }

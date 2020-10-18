@@ -1,6 +1,6 @@
 package me.flaymed.islands.util;
 
-import com.podcrash.api.plugin.PodcrashSpigot;
+import me.flaymed.islands.Islands;
 import me.flaymed.islands.inventory.AmntMaterialData;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -27,7 +27,7 @@ public final class ChestGen {
         while (size < NUM_ITEMS) {
             int pick = random.nextInt(dataSet.size());
             AmntMaterialData data = dataSet.get(pick);
-            PodcrashSpigot.debugLog("putting  a " + data);
+            Islands.getInstance().getLogger().info("putting  a " + data);
             dataSet.remove(pick);
             inventory.addItem(data.getStack());
             size++;

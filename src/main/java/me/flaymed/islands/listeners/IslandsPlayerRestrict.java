@@ -1,10 +1,6 @@
 package me.flaymed.islands.listeners;
 
-import com.podcrash.api.events.game.GameStartEvent;
-import com.podcrash.api.game.Game;
-import com.podcrash.api.game.GameManager;
-import com.podcrash.api.listeners.ListenerBase;
-import com.podcrash.api.world.BlockUtil;
+import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
 import org.bukkit.Bukkit;
@@ -28,10 +24,6 @@ public class IslandsPlayerRestrict extends ListenerBase {
     }
 
     @EventHandler
-    public void gameStart(GameStartEvent e) {
-        first4Communism.clear();
-    }
-    @EventHandler
     public void disableAnvil(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.ANVIL)
             e.setCancelled(true);
@@ -39,7 +31,7 @@ public class IslandsPlayerRestrict extends ListenerBase {
 
     @EventHandler
     public void disableBlockPlace(BlockPlaceEvent e) {
-        IslandsGame game = (IslandsGame) GameManager.getGame();
+        IslandsGame game = Islands.getInstance().getGame();
         if (game.getStage() == GameStage.FALLEN) return;
         boolean cancel = false;
         Material test = e.getBlockReplacedState().getData().getItemType();

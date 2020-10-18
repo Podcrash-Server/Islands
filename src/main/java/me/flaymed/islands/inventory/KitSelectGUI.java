@@ -1,58 +1,104 @@
 package me.flaymed.islands.inventory;
 
-import com.podcrash.api.kits.KitPlayer;
-import me.flaymed.islands.kits.IslandsPlayer;
+import com.podcrash.gamecore.kits.Kit;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
 public class KitSelectGUI {
 
-    private static KitSelectGUI INSTANCE;
-    private List<IslandsPlayer> baseKits;
-    private Inventory kitSelectInventory;
+    private static KitSelectGUI ksg;
+    private Inventory inventory;
+    private List<Kit> kits;
+    private int MAX_KITS = 18;
 
-    public KitSelectGUI(Class<? extends IslandsPlayer>... baseKits) {
-        INSTANCE = this;
+    public KitSelectGUI(Class<? extends Kit>... kits) {
+        ksg = this;
 
-        createBaseKits(baseKits);
-        createInventory();
+        initalizeKits(kits);
+        createGUI();
     }
 
-    private void createBaseKits(Class<? extends IslandsPlayer>... kits) {
-        List<IslandsPlayer> kitList = new ArrayList<>();
-        for (Class<? extends IslandsPlayer> kit : kits) {
+    private void initalizeKits(Class<? extends Kit>... kits) {
+
+        List<Kit> newKits = new ArrayList<>();
+
+        for (Class<? extends Kit> kit : kits) {
             try {
-                IslandsPlayer baseKit = kit.newInstance();
-                kitList.add(baseKit);
-            } catch (Exception e) {
+                newKits.add(kit.newInstance());
+            } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
         }
 
-        this.baseKits = kitList;
+        this.kits = newKits;
+
     }
 
-    private void createInventory() {
-        List<IslandsPlayer> kits = getBaseKits();
-        this.kitSelectInventory = Bukkit.createInventory(null, 45, "Kit Menu");
+    private void createGUI() {
+        List<Kit> kits = getKits();
+        if (kits == null || kits.size() == 0) return;
 
-        //just for now to test kit selection
-        //TODO: Pretty this up
-        for (int i = 0; i < kits.size(); i++) {
-            KitPlayer kit = kits.get(i);
-            this.kitSelectInventory.setItem(i, kit.getInventory().getItem(0));
+        //this incase we can inventory size to scale with the size of kits (1 empty row between a row of kits)
+        //int rows = (int) (2 + (Math.ceil(kits.size()/3.0) * 2) + 1);
+        int slots = 6 * 9;
+        this.inventory = Bukkit.createInventory(null, slots, "Select a Kit");
+        ItemStack aquaGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 3);
+        ItemMeta aquaMeta = aquaGlass.getItemMeta();
+        aquaMeta.setDisplayName(" ");
+        aquaGlass.setItemMeta(aquaMeta);
+        ItemStack blueGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 11);
+        ItemMeta blueMeta = blueGlass.getItemMeta();
+        blueMeta.setDisplayName(" ");
+        blueGlass.setItemMeta(blueMeta);
+        ItemStack grayGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 7);
+        ItemMeta grayMeta = grayGlass.getItemMeta();
+        grayMeta.setDisplayName(" ");
+        grayGlass.setItemMeta(grayMeta);
+
+        //top row
+        for (int i = 0; i < 9; i++) {
+            if (i % 2 == 0) this.inventory.setItem(i, aquaGlass);
+            else this.inventory.setItem(i, blueGlass);
+        }
+
+        //bottom row
+        for (int i = 45; i < 54; i++) {
+            if (i % 2 == 0) this.inventory.setItem(i, blueGlass);
+            else this.inventory.setItem(i, aquaGlass);
+        }
+
+        //kits
+        for (int i = 0; i < MAX_KITS; i++) {
+            if (i >= kits.size()) {
+                this.inventory.setItem(i + 18, grayGlass);
+                continue;
+            }
+            Kit kit = kits.get(i);
+            ItemStack item = kit.getItem();
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ChatColor.BOLD + "" + kit.getName() + " Kit");
+            meta.setLore(kit.getDescription());
+            item.setItemMeta(meta);
+            this.inventory.setItem(18 + i, item);
         }
 
     }
 
-    public List<IslandsPlayer> getBaseKits() {
-        return baseKits;
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public List<Kit> getKits() {
+        return kits;
     }
 
     public static KitSelectGUI getInstance() {
-        return INSTANCE;
+        return ksg;
     }
-
 }

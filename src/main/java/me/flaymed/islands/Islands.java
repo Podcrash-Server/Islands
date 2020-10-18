@@ -5,6 +5,8 @@ import com.podcrash.gamecore.game.GameTeam;
 import me.flaymed.islands.commands.OreSettingCommand;
 import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
+import me.flaymed.islands.inventory.KitSelectGUI;
+import me.flaymed.islands.kits.classes.*;
 import me.flaymed.islands.listeners.*;
 import me.flaymed.islands.teams.IslandsTeamSide;
 import org.bukkit.Bukkit;
@@ -23,23 +25,25 @@ public class Islands extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
-
-
         game = new IslandsGame();
 
         registerCommands();
         registerListeners();
         createTeams();
+        createKitGUI();
     }
 
     public void registerListeners() {
         new InventoryListener(this);
         new IslandsJoinListener(this);
-        new KitApplyListener(this);
         new IslandsGameListener(this);
         new IslandsPlayerRestrict(this);
         new CompassTrackerListener(this);
         new SoupListener(this);
+    }
+
+    private void createKitGUI() {
+        KitSelectGUI kitSelectGUI = new KitSelectGUI(Alchemist.class, Archer.class, Berserker.class, Brawler.class, Bomber.class, Miner.class);
     }
 
     private void createTeams() {

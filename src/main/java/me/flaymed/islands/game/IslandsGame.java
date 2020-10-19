@@ -2,18 +2,19 @@ package me.flaymed.islands.game;
 
 import com.google.common.reflect.ClassPath;
 import com.podcrash.gamecore.game.Game;
+import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.maker.BridgeGenerator;
+import me.flaymed.islands.kits.classes.LobbyKit;
 import me.flaymed.islands.util.ChestGen;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
 
 public class IslandsGame extends Game {
     //TODO water dmg
-    public static final DamageSource WATER_DAMAGE = () -> "Water Damage";
+    private int waterDmgTaskId;
     private GameStage stage;
     private BridgeGenerator bridgeGenerator;
     private String bridgeType;
@@ -183,11 +184,31 @@ public class IslandsGame extends Game {
 
     @Override
     public void start() {
+        setStage(GameStage.PREPARE);
         KitPlayerManager.gameStarts();
+        //TODO: tp all players to map spawns for their team
+
+        int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Islands.getInstance(), () -> {
+            for (Player player : KitPlayerManager.getPlayers()) {
+                if (player.getGameMode() == GameMode.SPECTATOR) continue;
+                Material m = player.getLocation().getBlock().getType();
+                if (m == Material.STATIONARY_WATER || m == Material.WATER) player.damage(1);
+
+            }
+        },0, 10);
+
+        this.waterDmgTaskId = taskid;
     }
 
     @Override
     public void stop() {
-        KitPlayerManager.gameEnds();
+        //TODO: Change this?
+        setStage(GameStage.LOBBY);
+        for (KitPlayer kitPlayer : KitPlayerManager.getKitPlayers()) {
+            kitPlayer.selectKit(new LobbyKit());
+            kitPlayer.getPlayer().setGameMode(GameMode.ADVENTURE);
+            //TODO: tp them to lobby
+        }
+        Bukkit.getScheduler().cancelTask(this.waterDmgTaskId);
     }
 }

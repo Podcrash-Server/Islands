@@ -16,6 +16,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Arrays;
 import java.util.List;
@@ -47,13 +48,28 @@ public class Islands extends JavaPlugin {
     }
 
     private void createEssentials() {
-        KitSelectGUI kitSelectGUI = new KitSelectGUI(Alchemist.class, Archer.class, Berserker.class, Brawler.class, Bomber.class, Miner.class);
+        //Method is very overloaded because well it has to be really....
         Inventory teamSelect = Bukkit.createInventory(null, 9, "Select A Team");
 
         ItemStack redWool = new ItemStack(Material.WOOL, 1, DyeColor.RED.getData());
+        ItemMeta redMeta = redWool.getItemMeta();
+        redMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Red Team");
+        redWool.setItemMeta(redMeta);
+
         ItemStack blueWool = new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getData());
+        ItemMeta blueMeta = blueWool.getItemMeta();
+        blueMeta.setDisplayName(ChatColor.BLUE + "" + ChatColor.BOLD + "Blue Team");
+        blueWool.setItemMeta(blueMeta);
+
         ItemStack greenWool = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getData());
+        ItemMeta greenMeta = greenWool.getItemMeta();
+        greenMeta.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "Green Team");
+        greenWool.setItemMeta(greenMeta);
+
         ItemStack yellowWool = new ItemStack(Material.WOOL, 1, DyeColor.YELLOW.getData());
+        ItemMeta yellowMeta = yellowWool.getItemMeta();
+        yellowMeta.setDisplayName(ChatColor.YELLOW + "" + ChatColor.BOLD + "Yellow Team");
+        yellowWool.setItemMeta(yellowMeta);
 
         teamSelect.setItem(0, redWool);
         teamSelect.setItem(1, blueWool);
@@ -61,6 +77,7 @@ public class Islands extends JavaPlugin {
         teamSelect.setItem(3, yellowWool);
 
         this.teamSelectInventory = teamSelect;
+        KitSelectGUI kitSelectGUI = new KitSelectGUI(Alchemist.class, Archer.class, Berserker.class, Brawler.class, Bomber.class, Miner.class);
 
         IslandsTeamSide redSide = new IslandsTeamSide("Red Team", ChatColor.RED, 0);
         IslandsTeam redTeam = new IslandsTeam(redWool, ChatColor.RED);

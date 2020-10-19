@@ -1,26 +1,30 @@
 package me.flaymed.islands;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.podcrash.gamecore.game.GameTeam;
+import com.podcrash.gamecore.game.GameSide;
 import me.flaymed.islands.commands.OreSettingCommand;
 import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.inventory.KitSelectGUI;
 import me.flaymed.islands.kits.classes.*;
 import me.flaymed.islands.listeners.*;
+import me.flaymed.islands.teams.IslandsTeam;
 import me.flaymed.islands.teams.IslandsTeamSide;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Islands extends JavaPlugin {
     private static Islands INSTANCE;
-    private List<GameTeam> teams;
+    private List<IslandsTeam> teams;
     private IslandsGame game;
+    private Inventory teamSelectInventory;
 
     @Override
     public void onEnable() {
@@ -29,8 +33,8 @@ public class Islands extends JavaPlugin {
 
         registerCommands();
         registerListeners();
-        createTeams();
-        createKitGUI();
+        //This is done in the Islands class not in game class to ensure the inventories exist before players join...
+        createEssentials();
     }
 
     public void registerListeners() {
@@ -42,29 +46,41 @@ public class Islands extends JavaPlugin {
         new SoupListener(this);
     }
 
-    private void createKitGUI() {
+    private void createEssentials() {
         KitSelectGUI kitSelectGUI = new KitSelectGUI(Alchemist.class, Archer.class, Berserker.class, Brawler.class, Bomber.class, Miner.class);
-    }
+        Inventory teamSelect = Bukkit.createInventory(null, 9, "Select A Team");
 
-    private void createTeams() {
+        ItemStack redWool = new ItemStack(Material.WOOL, 1, DyeColor.RED.getData());
+        ItemStack blueWool = new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getData());
+        ItemStack greenWool = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getData());
+        ItemStack yellowWool = new ItemStack(Material.WOOL, 1, DyeColor.YELLOW.getData());
+
+        teamSelect.setItem(0, redWool);
+        teamSelect.setItem(1, blueWool);
+        teamSelect.setItem(2, greenWool);
+        teamSelect.setItem(3, yellowWool);
+
+        this.teamSelectInventory = teamSelect;
+
         IslandsTeamSide redSide = new IslandsTeamSide("Red Team", ChatColor.RED, 0);
-        GameTeam redTeam = new GameTeam(new ArrayList<>());
+        IslandsTeam redTeam = new IslandsTeam(redWool, ChatColor.RED);
         redTeam.setSide(redSide);
 
         IslandsTeamSide blueSide = new IslandsTeamSide("Blue Team", ChatColor.BLUE, 1);
-        GameTeam blueTeam = new GameTeam(new ArrayList<>());
+        IslandsTeam blueTeam = new IslandsTeam(blueWool, ChatColor.BLUE);
         blueTeam.setSide(blueSide);
 
         IslandsTeamSide greenSide = new IslandsTeamSide("Green Team", ChatColor.GREEN, 2);
-        GameTeam greenTeam = new GameTeam(new ArrayList<>());
+        IslandsTeam greenTeam = new IslandsTeam(greenWool, ChatColor.GREEN);
         greenTeam.setSide(greenSide);
 
         IslandsTeamSide yellowSide = new IslandsTeamSide("Yellow Team", ChatColor.YELLOW, 3);
-        GameTeam yellowTeam = new GameTeam(new ArrayList<>());
+        IslandsTeam yellowTeam = new IslandsTeam(yellowWool, ChatColor.YELLOW);
         yellowTeam.setSide(yellowSide);
 
         this.teams = Arrays.asList(redTeam, blueTeam, greenTeam, yellowTeam);
     }
+
 
     private void registerCommands() {
         getCommand("ore").setExecutor(new OreSettingCommand());
@@ -79,6 +95,24 @@ public class Islands extends JavaPlugin {
 
     public IslandsGame getGame() {
         return game; //no npe check because you'll never need to get game instance before plugin is enabled.
+    }
+
+    public List<IslandsTeam> getTeams() {
+        if (teams == null) createEssentials();
+        return teams;
+    }
+
+    public IslandsTeam getTeamBySide(GameSide side) {
+        for (IslandsTeam team : getTeams()) {
+            if (team == null) return null;
+            if (team.getSide() == side) return team;
+        }
+        return null;
+    }
+
+    public Inventory getTeamSelectInventory() {
+        if (teamSelectInventory == null) createEssentials();
+        return teamSelectInventory;
     }
 
     public static Islands getInstance() {

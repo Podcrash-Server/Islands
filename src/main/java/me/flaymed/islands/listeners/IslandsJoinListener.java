@@ -6,6 +6,7 @@ import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.kits.IslandsPlayer;
+import me.flaymed.islands.kits.classes.LobbyKit;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
 import org.bukkit.GameMode;
@@ -47,7 +48,8 @@ public class IslandsJoinListener extends ListenerBase {
             if (game.getStage() == GameStage.LOBBY) {
                 player.setGameMode(GameMode.ADVENTURE);
                 IslandsPlayer islandsPlayer = new IslandsPlayer(player);
-                //TODO: Lobby Kit for kit and team selection
+                islandsPlayer.selectKit(new LobbyKit());
+                islandsPlayer.equip();
 
                 return;
             }

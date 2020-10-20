@@ -1,16 +1,13 @@
 package me.flaymed.islands.bridges.maker;
 
-import com.podcrash.api.db.pojos.PojoHelper;
-import com.podcrash.api.db.pojos.map.BridgePoint;
-import com.podcrash.api.db.pojos.map.BridgeSection;
-import com.podcrash.api.db.pojos.map.IDPoint2Point;
-import com.podcrash.api.db.pojos.map.IslandsMap;
 import com.podcrash.api.world.BlockUtil;
 import me.flaymed.islands.bridges.BridgeBox;
-import org.bukkit.Bukkit;
+import me.flaymed.islands.bridges.data.BridgeSection;
+import me.flaymed.islands.location.IDPoint2Point;
+import me.flaymed.islands.location.Point;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +22,8 @@ public abstract class BridgeGenerator {
 
     public void setUp(IslandsMap islandsMap) {
         for (IDPoint2Point point2Point : islandsMap.getBridges()) {
-            BridgeBox box = new BridgeBox(PojoHelper.convertPoint2Vector(point2Point.getPoint1()),
-                    PojoHelper.convertPoint2Vector(point2Point.getPoint2()));
+            BridgeBox box = new BridgeBox(convertPoint2Vector(point2Point.getPoint1()),
+                    convertPoint2Vector(point2Point.getPoint2()));
             boxes.add(box);
         }
         ready(islandsMap);
@@ -56,4 +53,16 @@ public abstract class BridgeGenerator {
             BlockUtil.setBlock(new Location(world, section.getX(), y, section.getZ()), 0);
         }
     }
+
+    private Vector convertPoint2Vector(Point point) {
+        return new Vector(point.getX(), point.getY(), point.getZ());
+    }
+    private Point convertVector2Point(Vector vector) {
+        Point p = new Point();
+        p.setX(vector.getX());
+        p.setY(vector.getY());
+        p.setZ(vector.getZ());
+        return p;
+    }
+
 }

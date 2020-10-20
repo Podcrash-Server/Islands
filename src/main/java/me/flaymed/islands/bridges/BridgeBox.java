@@ -1,7 +1,7 @@
 package me.flaymed.islands.bridges;
 
-import com.podcrash.api.location.BoundingBox;
-import com.podcrash.api.location.Coordinate;
+import me.flaymed.islands.location.BoundingBox;
+import me.flaymed.islands.location.Coordinate;
 import org.bukkit.util.Vector;
 
 public final class BridgeBox extends BoundingBox {

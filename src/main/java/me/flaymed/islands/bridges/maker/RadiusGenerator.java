@@ -1,16 +1,13 @@
 package me.flaymed.islands.bridges.maker;
 
-import com.google.common.collect.Maps;
-import com.podcrash.api.db.pojos.map.BridgePoint;
-import com.podcrash.api.db.pojos.map.BridgeSection;
-import com.podcrash.api.db.pojos.map.IslandsMap;
-import com.podcrash.api.db.pojos.map.Point;
-import com.podcrash.api.plugin.PodcrashSpigot;
+import me.flaymed.islands.Islands;
+import me.flaymed.islands.location.Point;
 import me.flaymed.islands.annotations.BridgeType;
+import me.flaymed.islands.bridges.data.BridgePoint;
+import me.flaymed.islands.bridges.data.BridgeSection;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +62,7 @@ public class RadiusGenerator extends BridgeGenerator {
                 min = min(dist, min);
             }
 
-            PodcrashSpigot.debugLog("Loaded bridge " + bridgePoint.getBridgeID() + " " + sectionMap.size() + " size");
+            Islands.getInstance().getLogger().info("Loaded bridge " + bridgePoint.getBridgeID() + " " + sectionMap.size() + " size");
         }
 
         this.maxRadius = (int) ceil(max) + 1;
@@ -91,7 +88,7 @@ public class RadiusGenerator extends BridgeGenerator {
             public void run() {
                 if (currentRadius[0] < minRadius) {
                     cancel();
-                    PodcrashSpigot.debugLog("Finished building the bridge!");
+                    Islands.getInstance().getLogger().info("Finished building the bridge!");
                     return;
                 }
 
@@ -132,12 +129,12 @@ public class RadiusGenerator extends BridgeGenerator {
                         cloneMap.remove(possKey);
                     }
                 }
-                PodcrashSpigot.debugLog("Placed " + blocksPlaced + " blocks");
+                Islands.getInstance().getLogger().info("Placed " + blocksPlaced + " blocks");
                 //decrease the radius little by little
                 currentRadius[0]--;
             }
         };
-        runnable.runTaskTimerAsynchronously(PodcrashSpigot.getInstance(), 0, delay);
+        runnable.runTaskTimerAsynchronously(Islands.getInstance(), 0, delay);
     }
 
     /**

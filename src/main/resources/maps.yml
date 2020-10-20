@@ -1,0 +1,25 @@
+#Base for maps stuff
+#Just for the sake of visualization
+Maps:
+  Volcano:
+    worldName: Volcanic
+    RedSpawns:
+      - Volcano,0,100,0
+      - Volcano,10,100,0
+      - Volcano,0,100,-10
+    BlueSpawns:
+      - Volcano,0,100,0
+      - Volcano,10,100,0
+      - Volcano,0,100,-10
+    GreenSpawns:
+      - Volcano,0,100,0
+      - Volcano,10,100,0
+      - Volcano,0,100,-10
+    YellowSpawns:
+      - Volcano,0,100,0
+      - Volcano,10,100,0
+      - Volcano,0,100,-10
+    EntitySpawns:
+      - Volcano,5,100,0
+      - Volcano,15,100,0
+      - Volcano,5,100,-5

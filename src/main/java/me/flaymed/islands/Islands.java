@@ -10,6 +10,7 @@ import me.flaymed.islands.kits.classes.*;
 import me.flaymed.islands.listeners.*;
 import me.flaymed.islands.teams.IslandsTeam;
 import me.flaymed.islands.teams.IslandsTeamSide;
+import me.flaymed.islands.tracker.CoordinateTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -26,12 +27,13 @@ public class Islands extends JavaPlugin {
     private List<IslandsTeam> teams;
     private IslandsGame game;
     private Inventory teamSelectInventory;
+    private CoordinateTracker coordinateTracker;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
         game = new IslandsGame();
-
+        coordinateTracker = new CoordinateTracker(this);
         registerCommands();
         registerListeners();
         //This is done in the Islands class not in game class to ensure the inventories exist before players join...
@@ -134,5 +136,9 @@ public class Islands extends JavaPlugin {
 
     public static Islands getInstance() {
         return INSTANCE;
+    }
+
+    public CoordinateTracker getCoordinateTracker() {
+        return coordinateTracker;
     }
 }

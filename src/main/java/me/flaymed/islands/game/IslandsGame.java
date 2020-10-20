@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class IslandsGame extends Game {
-    //TODO water dmg
     private int waterDmgTaskId;
     private GameStage stage;
     private BridgeGenerator bridgeGenerator;

@@ -2,7 +2,6 @@ package me.flaymed.islands.util.ore;
 
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

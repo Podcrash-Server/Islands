@@ -1,21 +1,12 @@
 package me.flaymed.islands.util.ore;
 
-import com.podcrash.api.plugin.PodcrashSpigot;
-import com.podcrash.api.world.BlockUtil;
-import net.jafama.FastMath;
-import org.bukkit.Bukkit;
+import me.flaymed.islands.Islands;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 public class VeinGen {
     private final Random random = new Random();
@@ -71,14 +62,14 @@ public class VeinGen {
         if (!this.cursorSet)
             throw new IllegalStateException("Please set a start location using startLocation!");
         //place the block initially
-        BlockUtil.setBlock(cursor, ore.getItemType());
+        cursor.getWorld().getBlockAt(cursor).setType(ore.getItemType());
 
         //find a randomized amount between the max and min to give ores.
         int maxOreGenerated = min + random.nextInt(max - min + 1);
         while (getOreGenerated() < maxOreGenerated) {
-            PodcrashSpigot.debugLog("ore generated is still less than the max ore generated: " + getOreGenerated() + " < " + maxOreGenerated);
+            Islands.getInstance().getLogger().info("ore generated is still less than the max ore generated: " + getOreGenerated() + " < " + maxOreGenerated);
             boolean generatedVein = generateVein();
-            PodcrashSpigot.debugLog("Can generated a vein?: " + generatedVein);
+            Islands.getInstance().getLogger().info("Can generated a vein?: " + generatedVein);
             if (!generatedVein)
                 break;
         }
@@ -106,7 +97,7 @@ public class VeinGen {
             return lastAir < 5;
         }
 
-        BlockUtil.setBlock(new Location(currentCursor.getWorld(), blockX, blockY, blockZ), ore.getItemType());
+        currentCursor.getWorld().getBlockAt(currentCursor).setType(ore.getItemType());
         oreGenerated++;
 
         this.cursor = currentCursor;

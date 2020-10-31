@@ -49,7 +49,6 @@ public class Islands extends JavaPlugin {
     public void registerListeners() {
         new InventoryListener(this);
         new IslandsJoinListener(this);
-        new IslandsGameListener(this);
         new IslandsPlayerRestrict(this);
         new CompassTrackerListener(this);
         new SoupListener(this);
@@ -116,7 +115,8 @@ public class Islands extends JavaPlugin {
         String worldName = config.getWorldNames().get(MathUtil.randomInt(config.getWorldNames().size()));
         World islandsWorld = Bukkit.createWorld(new WorldCreator(worldName));
         IslandsMap isMap = new IslandsMap(islandsWorld);
-        game.setActiveMap(isMap);
+        game.setIslandsMap(isMap);
+        game.setGameWorldName(islandsWorld);
     }
 
     @Override

@@ -8,11 +8,14 @@ import me.flaymed.islands.teams.IslandsTeam;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class IslandsMap {
+    private List<Point> redBorder;
+    private List<Point> blueBorder;
+    private List<Point> greenBorder;
+    private List<Point> yellowBorder;
     private List<Location> entitySpawnLocations;
     private List<Point> greenOres;
     private List<Point> yellowOres;
@@ -27,6 +30,10 @@ public class IslandsMap {
 
     public IslandsMap(World world) {
         super();
+        this.redBorder = new ArrayList<>();
+        this.blueBorder = new ArrayList<>();
+        this.greenBorder = new ArrayList<>();
+        this.yellowBorder = new ArrayList<>();
         this.entitySpawnLocations = new ArrayList<>();
         this.greenOres = new ArrayList<>();
         this.yellowOres = new ArrayList<>();
@@ -35,6 +42,8 @@ public class IslandsMap {
         this.chests = new ArrayList<>();
         this.bridges = new ArrayList<>();
         this.world = world;
+
+        fillData();
     }
 
     public List<Location> getEntitySpawnLocations() {
@@ -114,20 +123,74 @@ public class IslandsMap {
     }
 
     private void fillData() {
-
         ConfigurationSection worldData = Islands.getIsConfig().getWorldData(world.getName());
 
+        String bridgeType = worldData.getString("bridgetype");
+        setBridgeType(bridgeType);
+        Islands.getInstance().getGame().setBridgeType(bridgeType);
+
+        //TODO: parseWorldBorder
+        parseTeamBorder(worldData);
         //TODO: ore parse
         //TODO: bridge parse
-        //TODO: chest parse
-        //TODO: animal parse
-        //TODO: parseTeamBorders
-        //player spawn parse
-        parsePlayerSpawns(worldData);
 
-        //middle
+        parseChestLocations(worldData);
+        parseAnimalSpawns(worldData);
+
+        parsePlayerSpawns(worldData);
         parseMiddle(worldData);
 
+    }
+
+    private void parseTeamBorder(ConfigurationSection worldData) {
+        List<String> redBorderPoints = worldData.getStringList("RedSpawns");
+        List<String> blueBorderPoints = worldData.getStringList("BlueSpawns");
+        List<String> greenBorderPoints = worldData.getStringList("GreenSpawns");
+        List<String> yellowBorderPoints = worldData.getStringList("YellowSpawns");
+
+        //Red
+        for (String redBorderPoint : redBorderPoints) {
+            String[] borderPointParts = redBorderPoint.split(",");
+            if (borderPointParts[0].toLowerCase() != "border") continue;
+            Point borderPoint = new Point(Double.parseDouble(borderPointParts[1]), Double.parseDouble(borderPointParts[2]), Double.parseDouble(borderPointParts[3]));
+            redBorder.add(borderPoint);
+        }
+
+        //Blue
+        for (String blueBorderPoint : blueBorderPoints) {
+            String[] borderPointParts = blueBorderPoint.split(",");
+            if (borderPointParts[0].toLowerCase() != "border") continue;
+            Point borderPoint = new Point(Double.parseDouble(borderPointParts[1]), Double.parseDouble(borderPointParts[2]), Double.parseDouble(borderPointParts[3]));
+            blueBorder.add(borderPoint);
+        }
+
+        //Green
+        for (String greenBorderPoint : greenBorderPoints) {
+            String[] borderPointParts = greenBorderPoint.split(",");
+            if (borderPointParts[0].toLowerCase() != "border") continue;
+            Point borderPoint = new Point(Double.parseDouble(borderPointParts[1]), Double.parseDouble(borderPointParts[2]), Double.parseDouble(borderPointParts[3]));
+            greenBorder.add(borderPoint);
+        }
+
+        //Yellow
+        for (String yellowBorderPoint : yellowBorderPoints) {
+            String[] borderPointParts = yellowBorderPoint.split(",");
+            if (borderPointParts[0].toLowerCase() != "border") continue;
+            Point borderPoint = new Point(Double.parseDouble(borderPointParts[1]), Double.parseDouble(borderPointParts[2]), Double.parseDouble(borderPointParts[3]));
+            yellowBorder.add(borderPoint);
+        }
+
+    }
+
+    private void parseChestLocations(ConfigurationSection worldData) {
+        List<String> chestSpawnPoints = worldData.getStringList("Chests");
+        List<Point> chestPoints = new ArrayList<>();
+        for (String chestSpawnPoint : chestSpawnPoints) {
+            String[] chestPointParts = chestSpawnPoint.split(",");
+            Point chestPoint = new Point(Double.parseDouble(chestPointParts[0]), Double.parseDouble(chestPointParts[1]), Double.parseDouble(chestPointParts[2]));
+            chestPoints.add(chestPoint);
+        }
+        setChests(chestPoints);
     }
 
     private void parseAnimalSpawns(ConfigurationSection worldData) {
@@ -142,9 +205,12 @@ public class IslandsMap {
 
     private void parsePlayerSpawns(ConfigurationSection worldData) {
         Islands islands = Islands.getInstance();
+        List<String> redSpawnPoints = worldData.getStringList("RedSpawns");
+        List<String> blueSpawnPoints = worldData.getStringList("BlueSpawns");
+        List<String> greenSpawnPoints = worldData.getStringList("GreenSpawns");
+        List<String> yellowSpawnPoints = worldData.getStringList("YellowSpawns");
 
         //Red
-        List<String> redSpawnPoints = worldData.getStringList("RedSpawns");
         for (String redSpawnPoint : redSpawnPoints) {
             String[] spawnPointParts = redSpawnPoint.split(",");
             if (spawnPointParts[0].toLowerCase() == "border") continue;
@@ -154,7 +220,6 @@ public class IslandsMap {
         }
 
         //Blue
-        List<String> blueSpawnPoints = worldData.getStringList("BlueSpawns");
         for (String blueSpawnPoint : blueSpawnPoints) {
             String[] spawnPointParts = blueSpawnPoint.split(",");
             if (spawnPointParts[0].toLowerCase() == "border") continue;
@@ -164,7 +229,6 @@ public class IslandsMap {
         }
 
         //Green
-        List<String> greenSpawnPoints = worldData.getStringList("GreenSpawns");
         for (String greenSpawnPoint : greenSpawnPoints) {
             String[] spawnPointParts = greenSpawnPoint.split(",");
             if (spawnPointParts[0].toLowerCase() == "border") continue;
@@ -174,7 +238,6 @@ public class IslandsMap {
         }
 
         //Yellow
-        List<String> yellowSpawnPoints = worldData.getStringList("YellowSpawns");
         for (String yellowSpawnPoint : yellowSpawnPoints) {
             String[] spawnPointParts = yellowSpawnPoint.split(",");
             if (spawnPointParts[0].toLowerCase() == "border") continue;
@@ -187,10 +250,7 @@ public class IslandsMap {
     private void parseMiddle(ConfigurationSection worldData) {
         String middleData = worldData.get("middle").toString();
         String[] cords = middleData.split(",");
-        Point middlePoint = new Point();
-        middlePoint.setX(Double.parseDouble(cords[0]));
-        middlePoint.setY(Double.parseDouble(cords[1]));
-        middlePoint.setZ(Double.parseDouble(cords[2]));
+        Point middlePoint = new Point(Double.parseDouble(cords[0]), Double.parseDouble(cords[1]), Double.parseDouble(cords[2]));
         setMiddle(middlePoint);
     }
 }

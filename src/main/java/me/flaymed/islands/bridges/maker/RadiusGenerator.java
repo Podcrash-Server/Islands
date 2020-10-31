@@ -5,6 +5,7 @@ import me.flaymed.islands.location.Point;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.data.BridgePoint;
 import me.flaymed.islands.bridges.data.BridgeSection;
+import me.flaymed.islands.world.IslandsMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;

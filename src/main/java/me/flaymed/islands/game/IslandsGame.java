@@ -34,7 +34,7 @@ public class IslandsGame extends Game {
     private BridgeGenerator bridgeGenerator;
     private String bridgeType;
     //TODO: GAMEWORLMAP AND MAP STUFF
-    private String gameWorldName;
+    private World gameWorld;
     private IslandsMap map;
 
     public IslandsGame() {
@@ -82,12 +82,20 @@ public class IslandsGame extends Game {
         }
     }
 
+    public void setIslandsMap(IslandsMap map) {
+        this.map = map;
+    }
+
     public IslandsMap getMap() {
         return map;
     }
 
+    public void setGameWorldName(World world) {
+        this.gameWorld = world;
+    }
+
     public World getGameWorld() {
-        return Bukkit.getWorld(gameWorldName);
+        return gameWorld;
     }
 
     public void generateOres() {

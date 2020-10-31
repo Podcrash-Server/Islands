@@ -3,20 +3,29 @@
 Maps:
   Volcanic:
     worldName: Volcanic
+    bridgetype: radius
     middle: 0,60,0
+    RedOre:
+      - 0,40,0
     RedSpawns:
       - 0,100,0
       - 10,100,0
       - 0,100,-10
       - border,5,100,5
+    BlueOre:
+      - 0,10,0
     BlueSpawns:
       - 0,100,0
       - 10,100,0
       - 0,100,-10
+    GreenOre:
+      - 0,10,0
     GreenSpawns:
       - 0,100,0
       - 10,100,0
       - 0,100,-10
+    YellowOre:
+      - 0,10,0
     YellowSpawns:
       - 0,100,0
       - 10,100,0

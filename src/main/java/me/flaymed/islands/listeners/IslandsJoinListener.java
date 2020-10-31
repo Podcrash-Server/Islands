@@ -1,6 +1,5 @@
 package me.flaymed.islands.listeners;
 
-import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;

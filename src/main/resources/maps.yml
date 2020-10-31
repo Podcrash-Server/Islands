@@ -1,25 +1,31 @@
 #Base for maps stuff
 #Just for the sake of visualization
 Maps:
-  Volcano:
+  Volcanic:
     worldName: Volcanic
+    middle: 0,60,0
     RedSpawns:
-      - Volcano,0,100,0
-      - Volcano,10,100,0
-      - Volcano,0,100,-10
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
+      - border,5,100,5
     BlueSpawns:
-      - Volcano,0,100,0
-      - Volcano,10,100,0
-      - Volcano,0,100,-10
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
     GreenSpawns:
-      - Volcano,0,100,0
-      - Volcano,10,100,0
-      - Volcano,0,100,-10
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
     YellowSpawns:
-      - Volcano,0,100,0
-      - Volcano,10,100,0
-      - Volcano,0,100,-10
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
     EntitySpawns:
-      - Volcano,5,100,0
-      - Volcano,15,100,0
-      - Volcano,5,100,-5
+      - 5,100,0
+      - 15,100,0
+      - 5,100,-5
+    BridgePoints:
+      - 1,100,67,100 #bridge segment, x, y, z
+    Chests:
+      - 100,67,100 #x, y, z

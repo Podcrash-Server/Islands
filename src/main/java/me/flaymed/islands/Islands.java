@@ -2,6 +2,7 @@ package me.flaymed.islands;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.podcrash.gamecore.game.GameSide;
+import com.podcrash.gamecore.utils.MathUtil;
 import me.flaymed.islands.commands.OreSettingCommand;
 import me.flaymed.islands.commands.DropBridgeCommand;
 import me.flaymed.islands.game.IslandsGame;
@@ -11,10 +12,8 @@ import me.flaymed.islands.listeners.*;
 import me.flaymed.islands.teams.IslandsTeam;
 import me.flaymed.islands.teams.IslandsTeamSide;
 import me.flaymed.islands.tracker.CoordinateTracker;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import me.flaymed.islands.world.IslandsMap;
+import org.bukkit.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,16 +27,23 @@ public class Islands extends JavaPlugin {
     private IslandsGame game;
     private Inventory teamSelectInventory;
     private CoordinateTracker coordinateTracker;
+    private static Config config;
 
     @Override
     public void onEnable() {
         INSTANCE = this;
         game = new IslandsGame();
+        config = new Config();
         coordinateTracker = new CoordinateTracker(this);
         registerCommands();
         registerListeners();
+
         //This is done in the Islands class not in game class to ensure the inventories exist before players join...
+        selectMap();
         createEssentials();
+
+        //TODO: CREATE ISLANDS MAPS
+
     }
 
     public void registerListeners() {
@@ -106,6 +112,13 @@ public class Islands extends JavaPlugin {
         getCommand("bridges").setExecutor(new DropBridgeCommand());
     }
 
+    private void selectMap() {
+        String worldName = config.getWorldNames().get(MathUtil.randomInt(config.getWorldNames().size()));
+        World islandsWorld = Bukkit.createWorld(new WorldCreator(worldName));
+        IslandsMap isMap = new IslandsMap(islandsWorld);
+        game.setActiveMap(isMap);
+    }
+
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelAllTasks();
@@ -121,10 +134,10 @@ public class Islands extends JavaPlugin {
         return teams;
     }
 
-    public IslandsTeam getTeamBySide(GameSide side) {
+    public IslandsTeam getTeamBySide(int side) {
         for (IslandsTeam team : getTeams()) {
             if (team == null) return null;
-            if (team.getSide() == side) return team;
+            if (team.getSide().side() == side) return team;
         }
         return null;
     }
@@ -132,6 +145,10 @@ public class Islands extends JavaPlugin {
     public Inventory getTeamSelectInventory() {
         if (teamSelectInventory == null) createEssentials();
         return teamSelectInventory;
+    }
+
+    public static Config getIsConfig() {
+        return config;
     }
 
     public static Islands getInstance() {

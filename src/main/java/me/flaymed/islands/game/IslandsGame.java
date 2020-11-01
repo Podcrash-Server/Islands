@@ -36,6 +36,7 @@ public class IslandsGame extends Game {
     //TODO: GAMEWORLMAP AND MAP STUFF
     private World gameWorld;
     private IslandsMap map;
+    private long endTime;
 
     public IslandsGame() {
         super("Islands", 20, 48, 60);
@@ -48,6 +49,10 @@ public class IslandsGame extends Game {
     public void setStage(GameStage stage) {
         this.stage = stage;
         //TODO: GameState Change event
+    }
+
+    public long getEndTime() {
+        return endTime;
     }
 
     /**
@@ -244,13 +249,14 @@ public class IslandsGame extends Game {
 
     @Override
     public void start() {
+        generateOres();
         setStage(GameStage.PREPARE);
-        KitPlayerManager.gameStarts();
-        //TODO: tp all players to map spawns for their team
-
+        destroyBridge(5);
+        this.endTime = System.currentTimeMillis() + 8L * 60L * 1000L;
         startWaterTask();
         startEntityTask();
-
+        //TODO: tp all players to map spawns for their team
+        KitPlayerManager.gameStarts();
     }
 
     @Override

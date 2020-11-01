@@ -4,6 +4,7 @@ Maps:
   Volcanic:
     worldName: Volcanic
     bridgetype: radius
+    worldBorder: 100,100,-100,-100 # x1,z1,x2,z2 [y value doesn't matter]
     middle: 0,60,0
     RedOre:
       - 0,40,0

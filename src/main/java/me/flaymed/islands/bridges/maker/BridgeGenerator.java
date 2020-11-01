@@ -1,8 +1,8 @@
 package me.flaymed.islands.bridges.maker;
 
-import com.podcrash.api.world.BlockUtil;
 import me.flaymed.islands.bridges.BridgeBox;
 import me.flaymed.islands.bridges.data.BridgeSection;
+import me.flaymed.islands.location.BlockUtil;
 import me.flaymed.islands.location.IDPoint2Point;
 import me.flaymed.islands.location.Point;
 import me.flaymed.islands.world.IslandsMap;

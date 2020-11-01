@@ -1,6 +1,6 @@
 package me.flaymed.islands.events;
 
-import com.podcrash.api.game.Game;
+import com.podcrash.gamecore.game.Game;
 import me.flaymed.islands.game.GameStage;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

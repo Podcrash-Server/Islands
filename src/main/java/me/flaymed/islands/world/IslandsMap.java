@@ -8,7 +8,10 @@ import me.flaymed.islands.teams.IslandsTeam;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class IslandsMap {
@@ -27,6 +30,7 @@ public class IslandsMap {
     private String bridgeType;
     private List<IDPoint2Point> bridges;
     private World world;
+    private Double[] worldBorderCords; //X,Z,X2,Z2 [Y value doesn't matter]
 
     public IslandsMap(World world) {
         super();
@@ -44,6 +48,19 @@ public class IslandsMap {
         this.world = world;
 
         fillData();
+    }
+
+    public boolean playerIsInBound(Player player) {
+        if (worldBorderCords.length == 0) return true;
+        double playerX = player.getLocation().getX();
+        double playerZ = player.getLocation().getZ();
+
+        double maxX = worldBorderCords[0] > worldBorderCords[2] ? worldBorderCords[0] : worldBorderCords[2];
+        double minX = worldBorderCords[0] > worldBorderCords[2] ? worldBorderCords[2] : worldBorderCords[0];
+        double maxZ = worldBorderCords[1] > worldBorderCords[3] ? worldBorderCords[1] : worldBorderCords[3];
+        double minZ = worldBorderCords[1] > worldBorderCords[3] ? worldBorderCords[3] : worldBorderCords[1];
+
+        return playerX >= maxX || playerX <= minX || playerZ >= maxZ || playerZ <= minZ;
     }
 
     public List<Location> getEntitySpawnLocations() {
@@ -128,17 +145,100 @@ public class IslandsMap {
         String bridgeType = worldData.getString("bridgetype");
         setBridgeType(bridgeType);
         Islands.getInstance().getGame().setBridgeType(bridgeType);
-
-        //TODO: parseWorldBorder
-        parseTeamBorder(worldData);
-        //TODO: ore parse
         //TODO: bridge parse
 
+        parseWorldBorder(worldData);
+        parseOres(worldData);
         parseChestLocations(worldData);
         parseAnimalSpawns(worldData);
-
+        parseTeamBorder(worldData);
         parsePlayerSpawns(worldData);
         parseMiddle(worldData);
+
+        Islands.getInstance().getGame().getBridgeGenerator().setUp(this);
+
+    }
+
+    private void parseBridgeData(ConfigurationSection worldData) {
+        HashMap<Integer, IDPoint2Point> tempBridgePoints = new HashMap<>();
+        List<String> bridgePoints = worldData.getStringList("BridgePoints");
+        for (String bridgePoint: bridgePoints) {
+            String[] bridgeData = bridgePoint.split(",");
+            int bridgeID;
+            try {
+                bridgeID = Integer.parseInt(bridgeData[0]);
+            }catch (NumberFormatException e) {
+                return;
+            }
+            Location loc = new Location(world, Double.parseDouble(bridgeData[1]), Double.parseDouble(bridgeData[2]), Double.parseDouble(bridgeData[3]));
+            Point point = Point.convertVector2Point(loc.toVector());
+
+            IDPoint2Point questionPoint = tempBridgePoints.get(bridgeID);
+            if (questionPoint == null) {
+                questionPoint = new IDPoint2Point();
+                questionPoint.setId(bridgeID);
+                tempBridgePoints.put(bridgeID, questionPoint);
+            }
+
+            if (questionPoint.getPoint1() != null && questionPoint.getPoint2() != null) return;
+            if (questionPoint.getPoint1() == null) questionPoint.setPoint1(point);
+            else if (questionPoint.getPoint2() == null) questionPoint.setPoint2(point);
+
+        }
+        List<IDPoint2Point> bridges = new ArrayList<>(tempBridgePoints.values());
+        setBridges(bridges);
+
+    }
+
+    private void parseWorldBorder(ConfigurationSection worldData) {
+        String[] worldBorderData = worldData.getString("worldBorder").split(",");
+        worldBorderCords[0] = Double.parseDouble(worldBorderData[0]);
+        worldBorderCords[1] = Double.parseDouble(worldBorderData[1]);
+        worldBorderCords[2] = Double.parseDouble(worldBorderData[2]);
+        worldBorderCords[3] = Double.parseDouble(worldBorderData[3]);
+    }
+
+    private void parseOres(ConfigurationSection worldData) {
+        List<String> redOres = worldData.getStringList("RedOre");
+        List<String> blueOres = worldData.getStringList("BlueOre");
+        List<String> greenOres = worldData.getStringList("GreenOre");
+        List<String> yellowOres = worldData.getStringList("YellowOre");
+
+        //Red
+        List<Point> redOrePoints = new ArrayList<>();
+        for (String redOre : redOres) {
+            String[] oreValues = redOre.split(",");
+            Point orePoint = new Point(Double.parseDouble(oreValues[0]), Double.parseDouble(oreValues[1]), Double.parseDouble(oreValues[2]));
+            redOrePoints.add(orePoint);
+        }
+        setRedOres(redOrePoints);
+
+        //Blue
+        List<Point> blueOrePoints = new ArrayList<>();
+        for (String blueOre : blueOres) {
+            String[] oreValues = blueOre.split(",");
+            Point orePoint = new Point(Double.parseDouble(oreValues[0]), Double.parseDouble(oreValues[1]), Double.parseDouble(oreValues[2]));
+            blueOrePoints.add(orePoint);
+        }
+        setBlueOres(blueOrePoints);
+
+        //Green
+        List<Point> greenOrePoints = new ArrayList<>();
+        for (String greenOre : greenOres) {
+            String[] oreValues = greenOre.split(",");
+            Point orePoint = new Point(Double.parseDouble(oreValues[0]), Double.parseDouble(oreValues[1]), Double.parseDouble(oreValues[2]));
+            greenOrePoints.add(orePoint);
+        }
+        setGreenOres(greenOrePoints);
+
+        //Yellow
+        List<Point> yellowOrePoints = new ArrayList<>();
+        for (String yellowOre : yellowOres) {
+            String[] oreValues = yellowOre.split(",");
+            Point orePoint = new Point(Double.parseDouble(oreValues[0]), Double.parseDouble(oreValues[1]), Double.parseDouble(oreValues[2]));
+            yellowOrePoints.add(orePoint);
+        }
+        setYellowOres(yellowOrePoints);
 
     }
 

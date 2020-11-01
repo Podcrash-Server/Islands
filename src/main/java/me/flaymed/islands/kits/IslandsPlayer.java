@@ -4,14 +4,26 @@ import com.podcrash.gamecore.kits.KitPlayer;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.kits.classes.LobbyKit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class IslandsPlayer extends KitPlayer {
 
+    private int deaths;
+
     public IslandsPlayer(Player player) {
         super(player);
+        this.deaths = 0;
+    }
+
+    public void addDeath() {
+        this.deaths++;
+    }
+
+    public boolean canRevive() {
+        return deaths >= 1 && Islands.getInstance().getGame().getStage() == GameStage.PREPARE;
     }
 
     @Override

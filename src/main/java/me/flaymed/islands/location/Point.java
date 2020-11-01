@@ -1,5 +1,7 @@
 package me.flaymed.islands.location;
 
+import org.bukkit.util.Vector;
+
 import java.util.Objects;
 
 public class Point {
@@ -37,6 +39,14 @@ public class Point {
 
     public void setZ(double z) {
         this.z = z;
+    }
+
+    public static Point convertVector2Point(Vector vector) {
+        Point p = new Point();
+        p.setX(vector.getX());
+        p.setY(vector.getY());
+        p.setZ(vector.getZ());
+        return p;
     }
 
     @Override

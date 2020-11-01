@@ -145,8 +145,8 @@ public class IslandsMap {
         String bridgeType = worldData.getString("bridgetype");
         setBridgeType(bridgeType);
         Islands.getInstance().getGame().setBridgeType(bridgeType);
-        //TODO: bridge parse
 
+        parseBridgeData(worldData);
         parseWorldBorder(worldData);
         parseOres(worldData);
         parseChestLocations(worldData);
@@ -156,7 +156,6 @@ public class IslandsMap {
         parseMiddle(worldData);
 
         Islands.getInstance().getGame().getBridgeGenerator().setUp(this);
-
     }
 
     private void parseBridgeData(ConfigurationSection worldData) {

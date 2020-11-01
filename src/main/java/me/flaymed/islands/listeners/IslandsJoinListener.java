@@ -1,14 +1,17 @@
 package me.flaymed.islands.listeners;
 
+import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.KitPlayerManager;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;
 import me.flaymed.islands.kits.IslandsPlayer;
 import me.flaymed.islands.kits.classes.LobbyKit;
+import me.flaymed.islands.teams.IslandsTeam;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +39,10 @@ public class IslandsJoinListener extends ListenerBase {
             if (game.getStage() == GameStage.PREPARE) {
                 if (KitPlayerManager.getPlayers().contains(player)) {
                     player.setGameMode(GameMode.SURVIVAL);
-                    //Spawn Player on one of their team's spawns
+                    KitPlayer kitPlayer = KitPlayerManager.getKitPlayerFromPlayer(player);
+                    IslandsTeam team = (IslandsTeam) kitPlayer.getTeam();
+                    Location loc = team.getPlayerSpawnPoints().get(player);
+                    player.teleport(loc);
                 } else {
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Game is already in progress!");
                 }
@@ -53,7 +59,7 @@ public class IslandsJoinListener extends ListenerBase {
                 return;
             }
 
-            if (game.getStage() == GameStage.FALLEN) e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Game is already in progress!");
+            if (game.getStage() == GameStage.FALLEN || game.getStage() == GameStage.PREPARE) e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Game is already in progress!");
 
         }
     }

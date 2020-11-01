@@ -3,6 +3,7 @@
 Maps:
   Volcanic:
     worldName: Volcanic
+    author: filler
     bridgetype: radius
     worldBorder: 100,100,-100,-100 # x1,z1,x2,z2 [y value doesn't matter]
     middle: 0,60,0

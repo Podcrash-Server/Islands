@@ -39,6 +39,10 @@ public class Config {
         return worldNames;
     }
 
+    public ConfigurationSection getMapsConfigurationSection() {
+        return maps.getConfigurationSection("Maps");
+    }
+
     private void log(String msg) {
         Islands.getInstance().getLogger().log(Level.INFO, msg);
     }

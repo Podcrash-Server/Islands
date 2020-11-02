@@ -1,6 +1,5 @@
 package me.flaymed.islands.commands;
 
-import com.podcrash.api.game.GameManager;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.game.IslandsGame;

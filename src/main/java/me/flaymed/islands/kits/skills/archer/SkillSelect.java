@@ -1,6 +1,5 @@
 package me.flaymed.islands.kits.skills.archer;
 
-import com.podcrash.api.events.game.GameStartEvent;
 import com.podcrash.gamecore.GameCore;
 import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.Ability;
@@ -48,11 +47,7 @@ public class SkillSelect extends Ability implements Passive {
         return null;
     }
 
-    //TODO: GameCore GameStates or Islands GameStates
-    @EventHandler
-    public void apply(GameStartEvent e) {
-        getKitPlayer().getPlayer().openInventory(inv);
-    }
+    //TODO: GameCore GameStates or Islands GameStates and do the game start listener
 
     @EventHandler
     public void playerClickInventory(InventoryClickEvent e) {

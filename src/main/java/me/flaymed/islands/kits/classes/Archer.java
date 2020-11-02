@@ -1,22 +1,25 @@
 package me.flaymed.islands.kits.classes;
 
 import com.podcrash.gamecore.kits.Kit;
-import me.flaymed.islands.kits.skills.brawler.Behemoth;
+import me.flaymed.islands.kits.skills.archer.Barrage;
+import me.flaymed.islands.kits.skills.archer.RopedArrow;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
-public class Brawler extends Kit {
+public class Archer extends Kit {
 
-    public Brawler() {
-        super("Brawler", Behemoth.class);
+    public Archer() {
+        //Add SkillSelect later, going with just barrage and roped arrow for now.
+        super("Archer", Barrage.class, RopedArrow.class);
     }
 
     @Override
     public String getPermission() {
-        return "pdc.islands.brawler";
+        return "islands.archer";
     }
 
+    //TODO: description
     @Override
     public List<String> getDescription() {
         return null;
@@ -24,7 +27,7 @@ public class Brawler extends Kit {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.IRON_SWORD);
+        return new ItemStack(Material.BOW);
     }
 
     @Override
@@ -34,6 +37,6 @@ public class Brawler extends Kit {
 
     @Override
     public ItemStack getWeapon() {
-        return new ItemStack(Material.IRON_SWORD);
+        return null;
     }
 }

@@ -1,38 +1,48 @@
 package me.flaymed.islands.kits.skills.brawler;
 
-import com.podcrash.api.damage.Cause;
-import com.podcrash.api.events.DamageApplyEvent;
-import com.podcrash.api.kits.skilltypes.Passive;
-import com.podcrash.api.plugin.PodcrashSpigot;
+import com.podcrash.gamecore.kits.Ability;
+import com.podcrash.gamecore.kits.abilitytype.Passive;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
-public class Behemoth extends Passive {
+public class Behemoth extends Ability implements Passive {
     private final double lessKnockbackPercentage = 0.05;
     private final double lessDamagePercentage = 0.05;
     private final double moreKnockbackPercentage = 0.05;
-    public Behemoth() {
-    }
 
     @Override
     public String getName() {
         return "Behemoth";
     }
 
+    @Override
+    public ItemStack getItem() {
+        return null;
+    }
+
     @EventHandler
-    public void hit(DamageApplyEvent e) {
-        if (e.getCause() != Cause.MELEE && e.getCause() != Cause.MELEESKILL) return;
-        e.setModified(true);
-        if (e.getAttacker() == getPlayer()) {
+    public void hit(EntityDamageByEntityEvent e) {
+        if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) return;
+        if (e.getDamager() == getKitPlayer().getPlayer()) {
             double moreKBMultiplier = 1 + moreKnockbackPercentage;
-            e.setVelocityModifierX(moreKBMultiplier);
-            e.setVelocityModifierY(moreKBMultiplier);
-            e.setVelocityModifierZ(moreKBMultiplier);
-            PodcrashSpigot.debugLog(" I AM A BIG BAD BEHEMOTH>");
-        } else if (e.getVictim() == getPlayer()) { //this check might not be needed
+            Vector currentEntityVelocity = e.getEntity().getVelocity();
+            Vector newVelocity = new Vector();
+            newVelocity.setX(currentEntityVelocity.getX() * moreKBMultiplier);
+            newVelocity.setY(currentEntityVelocity.getY() * moreKBMultiplier);
+            newVelocity.setZ(currentEntityVelocity.getZ() * moreKBMultiplier);
+            e.getEntity().setVelocity(newVelocity);
+
+        } else if (e.getEntity() == getKitPlayer().getPlayer()) { //this check might not be needed
             double lessKBMultiplier = 1 - lessKnockbackPercentage;
-            e.setVelocityModifierX(lessKBMultiplier);
-            e.setVelocityModifierY(lessKBMultiplier);
-            e.setVelocityModifierZ(lessKBMultiplier);
+            Vector currentEntityVelocity = e.getEntity().getVelocity();
+            Vector newVelocity = new Vector();
+            newVelocity.setX(currentEntityVelocity.getX() * lessKBMultiplier);
+            newVelocity.setY(currentEntityVelocity.getY() * lessKBMultiplier);
+            newVelocity.setZ(currentEntityVelocity.getZ() * lessKBMultiplier);
+            e.getEntity().setVelocity(newVelocity);
 
             double lessDamageMultiplier = 1 - lessDamagePercentage;
             e.setDamage(lessDamageMultiplier * e.getDamage());

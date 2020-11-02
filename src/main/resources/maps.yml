@@ -1,0 +1,42 @@
+#Base for maps stuff
+#Just for the sake of visualization
+Maps:
+  Volcanic:
+    worldName: Volcanic
+    author: filler
+    bridgetype: radius
+    worldBorder: 100,100,-100,-100 # x1,z1,x2,z2 [y value doesn't matter]
+    middle: 0,60,0
+    RedOre:
+      - 0,40,0
+    RedSpawns:
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
+      - border,5,100,5
+    BlueOre:
+      - 0,10,0
+    BlueSpawns:
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
+    GreenOre:
+      - 0,10,0
+    GreenSpawns:
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
+    YellowOre:
+      - 0,10,0
+    YellowSpawns:
+      - 0,100,0
+      - 10,100,0
+      - 0,100,-10
+    EntitySpawns:
+      - 5,100,0
+      - 15,100,0
+      - 5,100,-5
+    BridgePoints:
+      - 1,100,67,100 #bridge segment, x, y, z
+    Chests:
+      - 100,67,100 #x, y, z

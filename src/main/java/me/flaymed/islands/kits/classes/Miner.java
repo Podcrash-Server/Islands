@@ -1,20 +1,21 @@
 package me.flaymed.islands.kits.classes;
 
 import com.podcrash.gamecore.kits.Kit;
-import me.flaymed.islands.kits.skills.brawler.Behemoth;
+import me.flaymed.islands.kits.skills.miner.OreScan;
+import me.flaymed.islands.kits.skills.miner.QuickMine;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
-public class Brawler extends Kit {
+public class Miner extends Kit {
 
-    public Brawler() {
-        super("Brawler", Behemoth.class);
+    public Miner() {
+        super("Miner", OreScan.class, QuickMine.class);
     }
 
     @Override
     public String getPermission() {
-        return "pdc.islands.brawler";
+        return "islands.miner";
     }
 
     @Override
@@ -24,7 +25,7 @@ public class Brawler extends Kit {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.IRON_SWORD);
+        return new ItemStack(Material.STONE_PICKAXE);
     }
 
     @Override
@@ -34,6 +35,6 @@ public class Brawler extends Kit {
 
     @Override
     public ItemStack getWeapon() {
-        return new ItemStack(Material.IRON_SWORD);
+        return new ItemStack(Material.STONE_PICKAXE);
     }
 }

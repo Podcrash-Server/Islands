@@ -15,7 +15,8 @@ shadowJar {
     mergeServiceFiles()
 
     dependencies {
-        exclude(project(':Engine'))
+        //exclude(project(':Engine'))
+        //exclude(project(':GameCore'))
         /*
         include (dependency("org.jooq:jooq:3.12.1"))
         include (dependency("com.zaxxer:HikariCP:3.3.1"))
@@ -31,13 +32,12 @@ dependencies {
     compileOnly fileTree('../libs')
 
     testImplementation 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
-    implementation "org.reflections:reflections:0.9.11"
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation project(path: ":Engine:PacketWrapper")
-    implementation project(path: ":Engine:MCEngine")
-    implementation project(path: ":Engine:DBEngine")
+    //implementation "org.reflections:reflections:0.9.11"
+    //implementation 'com.google.code.gson:gson:2.8.6'
+    //implementation project(path: ":GameCore")
 
-    //implementation 'com.comphenix.protocol:ProtocolLib:4.4.0'
+
+
     testImplementation 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
 
     testImplementation('org.slf4j:slf4j-simple:1.7.21')

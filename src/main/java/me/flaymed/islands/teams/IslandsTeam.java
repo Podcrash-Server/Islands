@@ -55,4 +55,18 @@ public class IslandsTeam extends GameTeam {
         return size() >= MAX_PLAYERS;
     }
 
+    public void createSpawns() {
+        int overflow = 0;
+        for (int i = 0; i < getPlayers().size(); i++) {
+            Player player = getPlayers().get(i);
+            Location spawnPoint;
+            if (i > getSpawnPointLocations().size()) spawnPoint = getSpawnPointLocations().get(i);
+            else {
+                spawnPoint = getSpawnPointLocations().get(overflow);
+                overflow++;
+            }
+            playerSpawnPoints.put(player, spawnPoint);
+        }
+    }
+
 }

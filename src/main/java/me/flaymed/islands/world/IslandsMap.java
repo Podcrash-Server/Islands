@@ -344,6 +344,9 @@ public class IslandsMap {
             Location spawnLocation = new Location(world, Double.parseDouble(spawnPointParts[0]), Double.parseDouble(spawnPointParts[1]), Double.parseDouble(spawnPointParts[2]));
             yellowTeam.addSpawnPointLocation(spawnLocation);
         }
+
+        Islands.getInstance().getTeams().forEach(islandsTeam -> islandsTeam.createSpawns());
+
     }
 
     private void parseMiddle(ConfigurationSection worldData) {

@@ -1,7 +1,6 @@
 package me.flaymed.islands;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.podcrash.gamecore.game.GameSide;
 import com.podcrash.gamecore.utils.MathUtil;
 import me.flaymed.islands.commands.OreSettingCommand;
 import me.flaymed.islands.commands.DropBridgeCommand;
@@ -49,6 +48,7 @@ public class Islands extends JavaPlugin {
     public void registerListeners() {
         new InventoryListener(this);
         new IslandsJoinListener(this);
+        new IslandsGameListener(this);
         new IslandsPlayerRestrict(this);
         new CompassTrackerListener(this);
         new SoupListener(this);

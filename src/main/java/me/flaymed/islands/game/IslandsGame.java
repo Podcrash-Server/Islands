@@ -8,8 +8,10 @@ import com.podcrash.gamecore.utils.MathUtil;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.annotations.BridgeType;
 import me.flaymed.islands.bridges.maker.BridgeGenerator;
+import me.flaymed.islands.events.GameStageEvent;
 import me.flaymed.islands.kits.classes.LobbyKit;
 import me.flaymed.islands.location.Point;
+import me.flaymed.islands.teams.IslandsTeam;
 import me.flaymed.islands.util.ChestGen;
 import me.flaymed.islands.util.ore.OreVeinSetting;
 import me.flaymed.islands.util.ore.VeinGen;
@@ -48,7 +50,7 @@ public class IslandsGame extends Game {
 
     public void setStage(GameStage stage) {
         this.stage = stage;
-        //TODO: GameState Change event
+        Bukkit.getPluginManager().callEvent(new GameStageEvent(this, stage));
     }
 
     public long getEndTime() {
@@ -255,7 +257,14 @@ public class IslandsGame extends Game {
         this.endTime = System.currentTimeMillis() + 8L * 60L * 1000L;
         startWaterTask();
         startEntityTask();
-        //TODO: tp all players to map spawns for their team
+        for (IslandsTeam team : Islands.getInstance().getTeams()) {
+            HashMap<Player, Location> spawnPoints = team.getPlayerSpawnPoints();
+            for (Map.Entry<Player, Location> spawnPoint: spawnPoints.entrySet()) {
+                Player player = spawnPoint.getKey();
+                Location location = spawnPoint.getValue();
+                player.teleport(location);
+            }
+        }
         KitPlayerManager.gameStarts();
     }
 

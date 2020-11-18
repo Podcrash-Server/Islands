@@ -38,7 +38,7 @@ public class Islands extends JavaPlugin {
         registerListeners();
 
         //This is done in the Islands class not in game class to ensure the inventories exist before players join...
-        selectMap();
+        //selectMap();
         createEssentials();
 
         //TODO: CREATE ISLANDS MAPS
@@ -46,7 +46,6 @@ public class Islands extends JavaPlugin {
     }
 
     public void registerListeners() {
-        new InventoryListener(this);
         new IslandsJoinListener(this);
         new IslandsGameListener(this);
         new IslandsPlayerRestrict(this);

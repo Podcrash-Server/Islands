@@ -1,8 +1,9 @@
 name: Islands
-main: me.flaymed.islands.Main
+main: me.flaymed.islands.Islands
 version: 0.1
 author: Flaymed
-
+depend:
+  - GameCore
 commands:
   leave:
     description: Leave a game.

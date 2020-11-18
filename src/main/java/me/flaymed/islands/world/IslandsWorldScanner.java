@@ -34,6 +34,7 @@ public class IslandsWorldScanner {
 
         //Scan the chunks
         Chunk[] chunks = world.getLoadedChunks();
+        List<Material> skipBlocks = Arrays.asList(Material.AIR, Material.WATER, Material.STATIONARY_WATER, Material.BEDROCK);
         for (Chunk chunk : chunks) {
             int chunkX = chunk.getX() << 4;
             int chunkZ = chunk.getZ() << 4;
@@ -43,7 +44,7 @@ public class IslandsWorldScanner {
                     for (int z = chunkZ; z < chunkZ + 16; z++) {
                         Block block = world.getBlockAt(x, y, z);
                         //maps contain lots of air/water blocks, will save a lof time not having to run the scan method on the majority of the blocks.
-                        if (block.getType() == Material.AIR || block.getType() ==  Material.WATER || block.getType() == Material.STATIONARY_WATER) continue;
+                        if (skipBlocks.contains(block.getType())) continue;
                         scan(block);
                     }
                 }

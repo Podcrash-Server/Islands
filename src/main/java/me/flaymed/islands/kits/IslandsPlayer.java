@@ -1,13 +1,19 @@
 package me.flaymed.islands.kits;
 
+import com.podcrash.gamecore.kits.Kit;
 import com.podcrash.gamecore.kits.KitPlayer;
+import com.podcrash.gamecore.kits.KitPlayerManager;
+import com.podcrash.gamecore.kits.abilitytype.Cooldown;
 import me.flaymed.islands.Islands;
 import me.flaymed.islands.game.GameStage;
 import me.flaymed.islands.kits.classes.LobbyKit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class IslandsPlayer extends KitPlayer {
 
@@ -27,11 +33,20 @@ public class IslandsPlayer extends KitPlayer {
     }
 
     @Override
+    public void selectKit(Kit kit) {
+        setActiveKit(kit);
+        if (kit != null) getActiveKit().setLastUsed(System.currentTimeMillis());
+        KitPlayerManager.register(this);
+        if (getActiveKit() instanceof LobbyKit) KitPlayerManager.registerAbilities(this, getActiveKit());
+    }
+
+    @Override
     public void equip() {
         getPlayer().getInventory().clear();
         getPlayer().getEquipment().clear();
         if (getActiveKit() == null) return;
-        if (getActiveKit().getClass().getSimpleName() == LobbyKit.class.getSimpleName() && Islands.getInstance().getGame().getStage() == GameStage.LOBBY) {
+        if (getActiveKit() instanceof LobbyKit && Islands.getInstance().getGame().getStage() == GameStage.LOBBY) {
+            getPlayer().sendMessage("Here's lobby kit!");
             ItemStack kitSelect = getActiveKit().getAbilities().get(0).getItem();
             ItemStack teamSelect = getActiveKit().getAbilities().get(1).getItem();
 

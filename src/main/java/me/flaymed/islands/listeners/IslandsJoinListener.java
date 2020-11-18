@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,7 +29,23 @@ public class IslandsJoinListener extends ListenerBase {
     }
 
     @EventHandler
-    public void join(PlayerLoginEvent e) {
+    public void join(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+        IslandsGame game = Islands.getInstance().getGame();
+
+        if (game.getStage() == GameStage.LOBBY) {
+            player.setGameMode(GameMode.ADVENTURE);
+            IslandsPlayer islandsPlayer = new IslandsPlayer(player);
+            islandsPlayer.selectKit(new LobbyKit());
+            islandsPlayer.equip();
+
+            return;
+        }
+
+    }
+
+    @EventHandler
+    public void login(PlayerLoginEvent e) {
         Player player = e.getPlayer();
         IslandsGame game = Islands.getInstance().getGame();
         if (game != null) {
@@ -36,6 +53,7 @@ public class IslandsJoinListener extends ListenerBase {
                 e.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full!");
                 return;
             }
+
             if (game.getStage() == GameStage.PREPARE) {
                 if (KitPlayerManager.getPlayers().contains(player)) {
                     player.setGameMode(GameMode.SURVIVAL);
@@ -46,15 +64,6 @@ public class IslandsJoinListener extends ListenerBase {
                 } else {
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Game is already in progress!");
                 }
-
-                return;
-            }
-
-            if (game.getStage() == GameStage.LOBBY) {
-                player.setGameMode(GameMode.ADVENTURE);
-                IslandsPlayer islandsPlayer = new IslandsPlayer(player);
-                islandsPlayer.selectKit(new LobbyKit());
-                islandsPlayer.equip();
 
                 return;
             }

@@ -4,9 +4,7 @@ import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
 import com.podcrash.gamecore.kits.KitPlayer;
 import com.podcrash.gamecore.kits.abilitytype.Interact;
-import me.flaymed.islands.Islands;
 import me.flaymed.islands.inventory.KitSelectGUI;
-import me.flaymed.islands.teams.IslandsTeam;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +25,7 @@ public class KitSelect extends Ability implements Interact {
 
     @Override
     public ItemStack getItem() {
-        ItemStack sword = new ItemStack(Material.FEATHER, 1);
+        ItemStack sword = new ItemStack(Material.DIAMOND_SWORD, 1);
         ItemMeta swordMeta = sword.getItemMeta();
         swordMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Kit Selector");
         sword.setItemMeta(swordMeta);

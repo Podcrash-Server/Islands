@@ -7,6 +7,10 @@ Maps:
     bridgetype: radius
     worldBorder: 100,100,-100,-100 # x1,z1,x2,z2 [y value doesn't matter]
     middle: 0,60,0
+    RedBorder: 10,10,100,100
+    BlueBorder: 10,10,100,100
+    GreenBorder: 10,10,100,100
+    YellowBorder: 10,10,100,100
     RedOre:
       - 0,40,0
     RedSpawns:

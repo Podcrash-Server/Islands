@@ -42,6 +42,7 @@ public class IslandsGame extends Game {
 
     public IslandsGame() {
         super("Islands", 20, 48, 60);
+        setStage(GameStage.LOBBY);
     }
 
     public GameStage getStage() {

@@ -1,15 +1,16 @@
 package me.flaymed.islands.kits.classes;
 
-import com.podcrash.gamecore.kits.Ability;
 import com.podcrash.gamecore.kits.Kit;
+import me.flaymed.islands.kits.skills.lobbykit.KitSelect;
+import me.flaymed.islands.kits.skills.lobbykit.TeamSelect;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 //This is the base kit that all islands players get.
 public class LobbyKit extends Kit {
-    public LobbyKit(Class<? extends Ability>... abilities) {
-        super("Lobby", abilities);
+    public LobbyKit() {
+        super("Lobby", KitSelect.class, TeamSelect.class);
     }
 
     @Override

@@ -17,6 +17,7 @@ public class IslandsGameListener extends ListenerBase {
         if (e.getStage() == GameStage.FALLEN) {
             ((IslandsGame) e.getGame()).fallBridge(5);
             Bukkit.broadcastMessage("Bridges are falling!");
+            //TODO: Fancy message
         }
     }
 }
